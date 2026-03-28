@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japón 2026 🇯🇵</title>
+    <style>
+        :root {
+            --jp-red: #bc002d;
+            --jp-black: #2d2d2d;
+            --jp-white: #f4f4f4;
+            --card-bg: #ffffff;
+            --overlay: rgba(0,0,0,0.7);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--jp-white);
+            color: var(--jp-black);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--jp-red);
+            margin-bottom: 20px;
+        }
+
+        h1 { margin: 0; font-size: 1.5rem; color: var(--jp-red); }
+        p.subtitle { margin: 5px 0; font-weight: bold; opacity: 0.7; }
+
+        /* Estilos de las Tarjetas */
+        .day-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--jp-red);
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .day-card:hover {
+            transform: translateY(-3px);
+            background: #fffafa;
+        }
+
+        .date {
+            font-weight: 800;
+            color: var(--jp-red);
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .location {
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* Estilos del Modal (Ventana Detalle) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .detail-section { margin-top: 20px; }
+        .detail-section h3 { border-bottom: 1px solid #ddd; padding-bottom: 5px; color: var(--jp-red); }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 250px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .photo-grid img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #eee;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: 30px;
+            padding-bottom: 20px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>JAPÓN 2026</h1>
+    <p class="subtitle">09 Sept - 23 Sept</p>
+</header>
+
+<div id="itinerary">
+    <div class="day-card" onclick="openDay(1)">
+        <span class="date">Miércoles 09 Sept</span>
+        <span class="location">🛬 Llegada a Tokyo</span>
+        <ul>
+            <li>Aterrizaje y recogida de JR Pass/Suica.</li>
+            <li>Check-in en el hotel.</li>
+            <li>Paseo suave por Shinjuku y cena de bienvenida.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(2)">
+        <span class="date">Jueves 10 Sept</span>
+        <span class="location">🗼 Tokyo: Tradición y Vistas</span>
+        <ul>
+            <li>Asakusa (Templo Senso-ji).</li>
+            <li>Crucero por el río Sumida hasta Odaiba.</li>
+            <li>Atardecer en el Shibuya Sky.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(3)">
+        <span class="date">Viernes 11 Sept</span>
+        <span class="location">🎌 Tokyo: Cultura Pop</span>
+        <ul>
+            <li>Harajuku (Calle Takeshita) y Santuario Meiji.</li>
+            <li>Shibuya (Cruce y Hachiko).</li>
+            <li>Akihabara por la tarde-noche.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(4)">
+        <span class="date">Sábado 12 Sept</span>
+        <span class="location">🗻 Excursión a Hakone / Fuji</span>
+        <ul>
+            <li>Vistas del Monte Fuji.</li>
+            <li>Paseo en barco por el lago Ashi.</li>
+            <li>Regreso a Tokyo.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(5)">
+        <span class="date">Domingo 13 Sept</span>
+        <span class="location">🚄 Tokyo -> Kanazawa</span>
+        <ul>
+            <li>Tren bala por la mañana.</li>
+            <li>Jardín Kenroku-en (uno de los 3 mejores de Japón).</li>
+            <li>Barrio de geishas Higashi Chaya.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(6)">
+        <span class="date">Lunes 14 Sept</span>
+        <span class="location">🚄 Kanazawa -> Kioto</span>
+        <ul>
+            <li>Castillo de Kanazawa.</li>
+            <li>Traslado a Kioto por la tarde.</li>
+            <li>Paseo nocturno por Pontocho.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(7)">
+        <span class="date">Martes 15 Sept</span>
+        <span class="location">⛩️ Kioto Este</span>
+        <ul>
+            <li>Kiyomizu-dera al amanecer.</li>
+            <li>Cuesta Sannenzaka y Ninenzaka.</li>
+            <li>Templo de Plata (Ginkaku-ji).</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(8)">
+        <span class="date">Miércoles 16 Sept</span>
+        <span class="location">🎋 Kioto Oeste</span>
+        <ul>
+            <li>Arashiyama (Bosque de Bambú).</li>
+            <li>Templo Tenryu-ji.</li>
+            <li>Kinkaku-ji (Pabellón Dorado).</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(9)">
+        <span class="date">Jueves 17 Sept</span>
+        <span class="location">🦊 Fushimi Inari y Nara</span>
+        <ul>
+            <li>Fushimi Inari (Los miles de toriis).</li>
+            <li>Tren a Nara: Gran Buda (Todai-ji) y ciervos.</li>
+            <li>Regreso a Kioto.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(10)">
+        <span class="date">Viernes 18 Sept</span>
+        <span class="location">🚄 Kioto -> Hiroshima</span>
+        <ul>
+            <li>Parque de la Paz y Museo.</li>
+            <li>Ferry a la isla de Miyajima.</li>
+            <li>Noche en Hiroshima.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(11)">
+        <span class="date">Sábado 19 Sept</span>
+        <span class="location">🏯 Himeji y Osaka</span>
+        <ul>
+            <li>Castillo de la Garza Blanca (Himeji).</li>
+            <li>Llegada a Osaka.</li>
+            <li>Cena en Dotonbori (Letrero de Glico).</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(12)">
+        <span class="date">Domingo 20 Sept</span>
+        <span class="location">🏖️ Okinawa: Naha</span>
+        <ul>
+            <li>Vuelo a Okinawa por la mañana.</li>
+            <li>Exploración de Kokusai Dori.</li>
+            <li>Relajación en la playa local de Naminoue.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(13)">
+        <span class="date">Lunes 21 Sept</span>
+        <span class="location">🏝️ Okinawa: Norte de la Isla</span>
+        <ul>
+            <li>Acuario Churaumi (uno de los más grandes del mundo).</li>
+            <li>Cabo Manzamo y vistas al mar de China.</li>
+            <li>Cena de cerdo Agu local.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(14)">
+        <span class="date">Martes 22 Sept</span>
+        <span class="location">🌊 Okinawa y vuelta a Tokyo</span>
+        <ul>
+            <li>Mañana de snorkel o relax.</li>
+            <li>Vuelo de regreso a Tokyo por la tarde.</li>
+            <li>Última noche en la capital.</li>
+        </ul>
+    </div>
+
+    <div class="day-card" onclick="openDay(15)">
+        <span class="date">Miércoles 23 Sept</span>
+        <span class="location">✈️ Vuelo de regreso</span>
+        <ul>
+            <li>Último desayuno japonés.</li>
+            <li>Traslado al aeropuerto (Narita/Haneda).</li>
+            <li>Fin del viaje.</li>
+        </ul>
+    </div>
+</div>
+
+<div id="dayModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle">Detalles del Día</h2>
+        
+        <div class="detail-section">
+            <h3>📍 Mapa del recorrido</h3>
+            <div id="modalMap" class="map-container">
+                </div>
+        </div>
+
+        <div class="detail-section">
+            <h3>📸 Fotos destacadas</h3>
+            <div id="modalPhotos" class="photo-grid"></div>
+        </div>
+
+        <div class="detail-section">
+            <h3>🍴 Dónde comer</h3>
+            <p id="modalFood"></p>
+        </div>
+
+        <div class="detail-section">
+            <h3>🏨 Hotel</h3>
+            <p id="modalHotel"><strong>Nombre:</strong> <span id="hotelName"></span></p>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    Buen viaje • 2026 • 🍱🍵🌸
+</div>
+
+<script>
+    // Base de datos local para los detalles
+const dayDetails = {
+        1: {
+            title: "Llegada a Tokyo (Shinjuku)",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3240.82803038614!2d139.701043!3d35.69384!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188cd0d6b1ba1f%3A0x1c32a1f1ec31d6d0!2sShinjuku%20Station!5e0!3m2!1sen!2sjp!4v1647414000000!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Shinjuku+Noche", "https://placehold.co/300x200?text=Ramen+Ichiran"],
+            food: "Ichiran Ramen (Shinjuku) o Omoide Yokocho para unas brochetas.",
+            hotel: "Gracery Shinjuku (El del Godzilla)"
+        },
+        2: {
+            title: "Tokyo: Asakusa y Shibuya",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3240.059434857025!2d139.7946571!3d35.7147651!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ec9a4fd31c7%3A0xa19f56477e682e!2sSenso-ji!5e0!3m2!1sen!2sjp!4v1647414000001!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Senso-ji", "https://placehold.co/300x200?text=Shibuya+Sky"],
+            food: "Asakusa Kagetsudo (Melonpan) y cena en Shibuya Parco.",
+            hotel: "Gracery Shinjuku (Misma ubicación)"
+        },
+        3: {
+            title: "Tokyo: Harajuku y Akihabara",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3241.2721013757!2d139.7016358!3d35.6701622!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ca540bc2719%3A0x6ec0c51804707172!2sTakeshita%20St!5e0!3m2!1sen!2sjp!4v1647414000002!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Takeshita+St", "https://placehold.co/300x200?text=Akihabara+Neon"],
+            food: "Kyushu Jangara Ramen (Harajuku) o Maid Cafe en Akihabara.",
+            hotel: "Gracery Shinjuku"
+        },
+        4: {
+            title: "Excursión a Hakone / Fuji",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52151.78918204642!2d139.012571!3d35.210419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6019a20689e47263%3A0x2492193630f948f1!2sLake%20Ashi!5e0!3m2!1sen!2sjp!4v1647414000003!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Mt+Fuji+View", "https://placehold.co/300x200?text=Hakone+Pirate+Ship"],
+            food: "Bakery & Table Hakone (Vistas al lago Ashi).",
+            hotel: "Gracery Shinjuku"
+        },
+        5: {
+            title: "Kanazawa: Jardines y Geishas",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3202.433945939228!2d136.6598817!3d36.5621276!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5ff8339f40899217%3A0x671c6628889c20!2sKenroku-en!5e0!3m2!1sen!2sjp!4v1647414000004!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Kenrokuen+Garden", "https://placehold.co/300x200?text=Higashi+Chaya"],
+            food: "Mercado Omicho (Marisco fresco/Donburi).",
+            hotel: "The Square Hotel Kanazawa"
+        },
+        6: {
+            title: "Kanazawa y traslado a Kioto",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3268.1256338575083!2d135.7681664!3d35.0031024!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x600108be330d8763%3A0x696874e0d497c413!2sPontocho%20Park!5e0!3m2!1sen!2sjp!4v1647414000005!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Kanazawa+Castle", "https://placehold.co/300x200?text=Pontocho+Alley"],
+            food: "Chao Chao Gyoza (Kioto) o cena junto al río en Pontocho.",
+            hotel: "Cross Hotel Kyoto"
+        },
+        7: {
+            title: "Kioto Este: Templos y Calles",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3268.618640822184!2d135.7827293!3d34.9948561!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x600108d172777197%3A0x5e2a25925a0a3820!2sKiyomizu-dera!5e0!3m2!1sen!2sjp!4v1647414000006!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Kiyomizu-dera", "https://placehold.co/300x200?text=Sannenzaka"],
+            food: "Yudofu (Tofu hervido) cerca de Kiyomizu-dera.",
+            hotel: "Cross Hotel Kyoto"
+        },
+        8: {
+            title: "Kioto Oeste: Arashiyama",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3267.439736868843!2d135.6700811!3d35.0158434!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x600107d3989c9339%3A0x1d5f66ec56df9092!2sArashiyama%20Bamboo%20Forest!5e0!3m2!1sen!2sjp!4v1647414000007!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Bamboo+Forest", "https://placehold.co/300x200?text=Kinkaku-ji"],
+            food: "Arashiyama Yoshimura (Soba con vistas al río).",
+            hotel: "Cross Hotel Kyoto"
+        },
+        9: {
+            title: "Fushimi Inari y Nara",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3269.835058514051!2d135.7704467!3d34.9671402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60010f36f6e6e397%3A0x93309e3a6288849!2sFushimi%20Inari-taisha!5e0!3m2!1sen!2sjp!4v1647414000008!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Fushimi+Inari", "https://placehold.co/300x200?text=Nara+Deer"],
+            food: "Kakinoha-zushi (Sushi envuelto en hoja de caqui) en Nara.",
+            hotel: "Cross Hotel Kyoto"
+        },
+        10: {
+            title: "Hiroshima y Miyajima",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.015294528148!2d132.3180424!3d34.295982!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x355a99071f43564b%3A0x6b44a70659174526!2sItsukushima%20Jinja!5e0!3m2!1sen!2sjp!4v1647414000009!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Itsukushima+Torii", "https://placehold.co/300x200?text=Atomic+Bomb+Dome"],
+            food: "Okonomimura (Okonomiyaki estilo Hiroshima).",
+            hotel: "Sheraton Grand Hiroshima"
+        },
+        11: {
+            title: "Himeji y Osaka",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.3961569426983!2d135.5002047!3d34.6690747!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e714659f1f6f%3A0x4ce40d4484f2257d!2sDotonbori!5e0!3m2!1sen!2sjp!4v1647414000010!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Himeji+Castle", "https://placehold.co/300x200?text=Dotonbori+Glico"],
+            food: "Takoyaki Wanaka y Kushikatsu Daruma en Osaka.",
+            hotel: "Hotel Nikko Osaka"
+        },
+        12: {
+            title: "Okinawa: Llegada a Naha",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d57271.7456720138!2d127.6433224!3d26.2124013!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x34e569865fb1e967%3A0x95971a681c2f9d3b!2sNaha%2C%20Okinawa!5e0!3m2!1sen!2sjp!4v1647414000011!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Kokusai+Dori", "https://placehold.co/300x200?text=Okinawa+Beach"],
+            food: "Okinawa Soba en el mercado Makishi.",
+            hotel: "Hyatt Regency Naha Okinawa"
+        },
+        13: {
+            title: "Okinawa: Norte y Acuario",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113885.67389280457!2d127.873295!3d26.690858!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x34e4f9382173e4b7%3A0x139943542283e743!2sOkinawa%20Churaumi%20Aquarium!5e0!3m2!1sen!2sjp!4v1647414000012!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Churaumi+Aquarium", "https://placehold.co/300x200?text=Emerald+Beach"],
+            food: "Agu Pork Shabu-shabu (Cerdo local).",
+            hotel: "Hyatt Regency Naha Okinawa"
+        },
+        14: {
+            title: "Okinawa: Relax y Regreso a Tokyo",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3582.478906540656!2d127.8504351!3d26.5041071!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x34e50308d7454261%3A0xc696874e0d497c41!2sManzamo!5e0!3m2!1sen!2sjp!4v1647414000013!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Manzamo+Cape", "https://placehold.co/300x200?text=Tokyo+Night"],
+            food: "Yakiniku de despedida en Tokyo.",
+            hotel: "The Royal Park Hotel Haneda"
+        },
+        15: {
+            title: "Vuelo de Regreso",
+            map: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3246.73273111002!2d139.7788414!3d35.5493932!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6018617300000001%3A0x3708a0d08253106d!2sHaneda%20Airport!5e0!3m2!1sen!2sjp!4v1647414000014!5m2!1sen!2sjp"></iframe>',
+            photos: ["https://placehold.co/300x200?text=Haneda+Airport", "https://placehold.co/300x200?text=Sayonara+Japan"],
+            food: "Último Bento en el aeropuerto.",
+            hotel: "Vuelo de vuelta"
+        }
+    };
+
+    function openDay(dayId) {
+        const data = dayDetails[dayId];
+        if (!data) {
+            alert("Detalles aún no disponibles para este día.");
+            return;
+        }
+
+        document.getElementById('modalTitle').innerText = data.title;
+        document.getElementById('modalMap').innerHTML = data.map;
+        document.getElementById('modalFood').innerText = data.food;
+        document.getElementById('hotelName').innerText = data.hotel;
+
+        // Cargar fotos
+        const photoContainer = document.getElementById('modalPhotos');
+        photoContainer.innerHTML = '';
+        data.photos.forEach(src => {
+            const img = document.createElement('img');
+            img.src = src;
+            photoContainer.appendChild(img);
+        });
+
+        document.getElementById('dayModal').style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById('dayModal').style.display = "none";
+    }
+
+    // Cerrar si se hace clic fuera del contenido blanco
+    window.onclick = function(event) {
+        const modal = document.getElementById('dayModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+</script>
+
+</body>
+</html>
