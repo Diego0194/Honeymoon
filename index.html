@@ -277,12 +277,15 @@ function showTab(event, tabId) {
     event.currentTarget.classList.add('active');
 }
 
-function getMapEmbed(query) { 
-    return `<iframe src="https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=14&ie=UTF8&iwloc=&output=embed"></iframe>`;
-} 
+function getMapEmbed(url) { 
+    // Si no hay URL de MyMaps, podemos poner un mapa vacío o un placeholder
+    if (!url) return `<div style="padding:20px; text-align:center;">Mapa no disponible</div>`;
+    
+    return `<iframe src="${url}" width="100%" height="100%"></iframe>`;
+}
 
 const dayDetails = { 
-    1: { title: "Tokio (Shinjuku)", date: "Mié 09 Sept", plan: ["12:55 - Llegada al aeropuerto.", "Traslado aeropuerto-hotel (1h20min).", "Check-in hotel.", "19:00 - Free-Tour Shinjuku (2h45min)"], food: "Ichiran Ramen.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Narita.jpg", "media/Shinjuku_day.jpg"] }, 
+    1: { title: "Tokio (Shinjuku)", date: "Mié 09 Sept", plan: ["12:55 - Llegada al aeropuerto.", "Traslado aeropuerto-hotel (1h20min).", "Check-in hotel.", "19:00 - Free-Tour Shinjuku (2h45min)"], food: "Ichiran Ramen.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Narita.jpg", "media/Shinjuku_day.jpg"], mapUrl: "https://www.google.com/maps/d/embed?mid=13orr9dGNqxhG8K_rdZfJ5NS4iQlnULc&hl=es&ehbc=2E312F" }, 
     2: { title: "Asakusa y Shibuya, Tokio", date: "Jue 10 Sept", plan: ["Senso-ji.", "Shibuya Sky."], food: "Street food en Nakamise.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["https://placehold.co/300x200?text=Asakusa"] }, 
     3: { title: "Akihabara y Harajuku, Tokio", date: "Vie 11 Sept", plan: ["Santuario Meiji.", "Takeshita Street.", "Akihabara."], food: "Maid Cafe.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Daikoku.jpg"] }, 
     4: { title: "Monte Fuji y Hakone", date: "Sáb 12 Sept", plan: ["Excursión Fuji.", "Lago Ashi."], food: "Kuro-tamago.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "send", label: "📤 Enviar a Kioto", photos: ["https://placehold.co/300x200?text=Monte+Fuji"] }, 
@@ -306,7 +309,11 @@ function openDay(id) {
     document.getElementById('modalTitle').innerText = data.title; 
     document.getElementById('modalFood').innerText = data.food; 
     document.getElementById('modalHotel').innerText = data.hotel; 
-    document.getElementById('modalMap').innerHTML = getMapEmbed(data.title); 
+    document.getElementById('modalMap').innerHTML = getMapEmbed(data.mapUrl);
+
+	// Si existe mapUrl usa MyMaps, si no, usa la búsqueda por título
+	const mapSource = data.mapUrl ? data.mapUrl : `https://www.google.com/maps?q=${encodeURIComponent(data.title)}&output=embed`;
+	document.getElementById('modalMap').innerHTML = `<iframe src="${mapSource}" width="100%" height="100%"></iframe>`;
 
     const planUl = document.getElementById('modalPlan'); 
     planUl.innerHTML = ''; 
