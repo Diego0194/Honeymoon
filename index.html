@@ -148,6 +148,51 @@
 
         .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; } 
         .photo-grid img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; background: #f0f0f0; } 
+		
+		/* Estilos para el contenedor de la foto y el texto */
+.photo-item {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.photo-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+    display: block;
+}
+
+.photo-filename {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* --- Ajustes de tamaño y estilo --- */
+    font-size: 1.4rem; 
+    font-weight: 800; 
+    color: var(--jp-red); 
+    /* ---------------------------------- */
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    width: 95%;
+    word-wrap: break-word;
+    /* Un pequeño sombreado blanco ayuda a que se lea mejor si la foto es oscura */
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
+}
+
+/* Estado cuando se hace click */
+.photo-item.show-name img {
+    opacity: 0.15; /* Casi transparente */
+}
+
+.photo-item.show-name .photo-filename {
+    opacity: 1;
+}
     </style> 
 </head> 
 <body> 
@@ -169,7 +214,7 @@
     </div> 
     <div class="day-card" onclick="openDay(2)"> 
         <span class="date">Jueves 10 Sept</span> 
-        <span class="location">🗼 Tokio: Tradición y Vistas</span> 
+        <span class="location">🗼 Tokio: Shinjuku y Shibuya</span> 
     </div> 
     <div class="day-card" onclick="openDay(3)"> 
         <span class="date">Viernes 11 Sept</span> 
@@ -283,8 +328,8 @@ function getMapEmbed(url) {
 }
 
 const dayDetails = { 
-    1: { title: "Tokio (Shinjuku)", date: "Mié 09 Sept", plan: ["12:55 - Llegada al aeropuerto.", "Traslado aeropuerto-hotel (1h20min).", "Check-in hotel.", "19:00 - Free-Tour Shinjuku (2h45min)"], food: "Ichiran Ramen.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Narita.jpg", "media/Shinjuku_day.jpg"], mapImg: "media/Mapas/ruta_dia1.png" }, 
-    2: { title: "Asakusa y Shibuya, Tokio", date: "Jue 10 Sept", plan: ["Senso-ji.", "Shibuya Sky."], food: "Street food en Nakamise.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["https://placehold.co/300x200?text=Asakusa"] }, 
+    1: { title: "Tokio (Shinjuku)", date: "Mié 09 Sept", plan: ["12:55 - Llegada al aeropuerto.", "Traslado aeropuerto-hotel (1h20min).", "Check-in hotel.", "19:00 - Free-Tour Shinjuku (2h45min)"], food: "Ichiran Ramen.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Narita.jpg", "media/Shinjuku de día.jpg"], mapImg: "media/Mapas/ruta_dia1.png" }, 
+    2: { title: "Asakusa y Shibuya, Tokio", date: "Jue 10 Sept", plan: ["⛩️06:00 - Templo Sensō-ji (Gratis)", "🥐07:30 - Desayunar en Sumida Park", "🛍️09:00 - Calle Nakamise (Tiendas).", "🚇35min: Asakusa Sta. - Shibuya (1,40€)", "📷12:00 - Cruce de Shibuya", "🍜13:00-15:00 - Comer y descansar", "⛩️15:00-17:00 - Santuario Meiji", "🚶🏻35min: Vuelta a Shinjuku","🛍️18:30 - Tarde por Shinjuku (Compras)"], food: "Street food en Nakamise.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Senjoji.jpg", "media/Nakamise.jpg", "media/Shibuya.jpg", "media/Meiji.jpg"] }, 
     3: { title: "Akihabara y Harajuku, Tokio", date: "Vie 11 Sept", plan: ["Santuario Meiji.", "Takeshita Street.", "Akihabara."], food: "Maid Cafe.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Daikoku.jpg"] }, 
     4: { title: "Monte Fuji y Hakone", date: "Sáb 12 Sept", plan: ["Excursión Fuji.", "Lago Ashi."], food: "Kuro-tamago.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "send", label: "📤 Enviar a Kioto", photos: ["https://placehold.co/300x200?text=Monte+Fuji"] }, 
     5: { title: "Nagano", date: "Dom 13 Sept", plan: ["Shinkansen a Nagano.", "Templo Zenko-ji."], food: "Shinshu Soba.", hotel: "Hotel Nagano", hotelImg: "media/Hoteles/Tokio.png", status: "backpack", label: "🎒 Mochila", photos: [] }, 
@@ -324,13 +369,37 @@ function openDay(id) {
         planUl.appendChild(li); 
     }); 
 
-    const photoDiv = document.getElementById('modalPhotos'); 
+const photoDiv = document.getElementById('modalPhotos'); 
     photoDiv.innerHTML = ''; 
     data.photos.forEach(src => { 
+        // 1. Extraer el nombre del archivo
+        // Tomamos lo que hay tras la última '/' y quitamos la extensión
+        const filenameWithExt = src.split('/').pop();
+        const filename = filenameWithExt.substring(0, filenameWithExt.lastIndexOf('.')) || filenameWithExt;
+
+        // 2. Crear el contenedor
+        let container = document.createElement('div');
+        container.className = 'photo-item';
+        
+        // 3. Crear la imagen
         let img = document.createElement('img'); 
         img.src = src; 
-        photoDiv.appendChild(img); 
-    }); 
+        
+        // 4. Crear el texto con el nombre
+        let nameSpan = document.createElement('span');
+        nameSpan.className = 'photo-filename';
+        nameSpan.innerText = filename;
+
+        // 5. Evento click para togglear la clase
+        container.onclick = () => {
+            container.classList.toggle('show-name');
+        };
+
+        // Ensamblar
+        container.appendChild(img);
+        container.appendChild(nameSpan);
+        photoDiv.appendChild(container); 
+    });
 
 const hImg = document.getElementById('hotelImg');
 if(data.hotelImg) {
