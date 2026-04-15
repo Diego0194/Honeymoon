@@ -301,12 +301,12 @@
 
         <div class="detail-section"> 
             <h3>🥢 Dónde comer</h3> 
-            <p id="modalFood"></p> 
+            <ul id="modalFood"></ul> 
         </div> 
 
 		<div class="detail-section"> 
 			<h3>🏨 Hotel</h3> 
-			<img id="hotelImg" src="" style="width: 100%; height: 180px; object-fit: contain; border-radius: 12px; margin-top: 10px; display: none; cursor: pointer;">
+			<img id="hotelImg" src="" style="width: 100%; height: auto; max-height: 250px; object-fit: cover; border-radius: 12px; margin-top: 5px; display: none; cursor: pointer;">
 		</div>
     </div> 
 </div> 
@@ -328,7 +328,7 @@ function getMapEmbed(url) {
 
 const dayDetails = { 
     1: { title: "Tokio (Shinjuku)", date: "Mié 09 Sept", plan: ["12:55 - Llegada al aeropuerto.", "Traslado aeropuerto-hotel (1h20min).", "Check-in hotel.", "19:00 - Free-Tour Shinjuku (2h45min)"], food: "Ichiran Ramen.", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Narita.jpg", "media/Shinjuku de día.jpg"], mapImg: "media/Mapas/ruta_dia1.png" }, 
-    2: { title: "Asakusa y Shibuya, Tokio", date: "Jue 10 Sept", plan: ["⛩️06:00 - Templo Sensō-ji (Gratis)", "🥐07:30 - Desayunar en Sumida Park", "🛍️09:00 - Calle Nakamise (Tiendas).", "🚇35min: Asakusa Sta. - Shibuya (1,40€)", "📷12:00 - Cruce de Shibuya", "🍜13:00-15:00 - Comer y descansar", "⛩️15:00-17:00 - Santuario Meiji", "🚶🏻35min: Vuelta a Shinjuku","🛍️18:30 - Tarde por Shinjuku (Compras)"], food: "Street food en Nakamise.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Senjoji.jpg", "media/Nakamise.jpg", "media/Shibuya.jpg", "media/Meiji.jpg"], mapImg: "media/Mapas/ruta_dia2.png" }, 
+    2: { title: "Asakusa y Shibuya, Tokio", date: "Jue 10 Sept", plan: ["⛩️06:00 - Templo Sensō-ji (Gratis)", "🥐07:30 - Desayunar en Sumida Park", "🛍️09:00 - Calle Nakamise (Tiendas).", "🚇35min: Asakusa Sta. - Shibuya (1,40€)", "📷12:00 - Cruce de Shibuya", "🍜13:00-15:00 - Comer y descansar", "⛩️15:00-17:00 - Santuario Meiji", "🚶🏻35min: Vuelta a Shinjuku","🛍️18:30 - Tarde por Shinjuku (Compras)"], food: "Desayuno: Street food en Nakamise.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Senjoji.jpg", "media/Nakamise.jpg", "media/Shibuya.jpg", "media/Meiji.jpg"], mapImg: "media/Mapas/ruta_dia2.png" }, 
     3: { title: "Akihabara y Harajuku, Tokio", date: "Vie 11 Sept", plan: ["Santuario Meiji.", "Takeshita Street.", "Akihabara."], food: "Maid Cafe.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Daikoku.jpg"] }, 
     4: { title: "Monte Fuji y Hakone", date: "Sáb 12 Sept", plan: ["Excursión Fuji.", "Lago Ashi."], food: "Kuro-tamago.", hotel: "Gracery Shinjuku", hotelImg: "media/Hoteles/Tokio.png", status: "send", label: "📤 Enviar a Kioto", photos: ["https://placehold.co/300x200?text=Monte+Fuji"] }, 
     5: { title: "Nagano", date: "Dom 13 Sept", plan: ["Shinkansen a Nagano.", "Templo Zenko-ji."], food: "Shinshu Soba.", hotel: "Hotel Nagano", hotelImg: "media/Hoteles/Tokio.png", status: "backpack", label: "🎒 Mochila", photos: [] }, 
@@ -349,8 +349,15 @@ function openDay(id) {
     if (!data) return; 
     
     document.getElementById('modalTitle').innerText = data.title; 
-    document.getElementById('modalFood').innerText = data.food; 
     document.getElementById('modalMap').innerHTML = getMapEmbed(data.mapUrl);
+
+	const foodUl = document.getElementById('modalFood');
+	foodUl.innerHTML = '';
+	if (data.food) {
+    let li = document.createElement('li');
+    li.innerText = data.food;
+    foodUl.appendChild(li);
+}
 
 	const mapDiv = document.getElementById('modalMap');
 	if (data.mapImg) {
