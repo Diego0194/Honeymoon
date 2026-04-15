@@ -289,10 +289,13 @@
             <ul id="modalPlan"></ul> 
         </div> 
 
-        <div class="detail-section"> 
-            <h3>📍 Recorrido del día</h3> 
-            <div id="modalMap" class="map-container"></div> 
-        </div> 
+		<div class="detail-section"> 
+			<h3>📍 Recorrido del día</h3> 
+			<div class="map-container">
+				<img id="modalMapImg" src="" style="width: 100%; border-radius: 12px; display: none; cursor: pointer;">
+				<div id="modalMapIframe"></div> 
+			</div> 
+		</div>
 
         <div class="detail-section"> 
             <h3>📸 Fotos</h3> 
@@ -311,6 +314,11 @@
     </div> 
 </div> 
 
+<div id="imageViewer" class="modal" style="display:none; align-items:center; justify-content:center; background-color: rgba(0,0,0,0.9);">
+    <span class="close-modal" onclick="closeViewer()" style="color: white; z-index: 1001;">×</span>
+    <img id="fullResImage" src="" style="max-width: 95%; max-height: 90vh; border-radius: 8px; margin: auto; display: block;">
+</div>
+
 <script> 
 function showTab(event, tabId) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -319,12 +327,6 @@ function showTab(event, tabId) {
     event.currentTarget.classList.add('active');
 }
 
-function getMapEmbed(url) { 
-    // Si no hay URL de MyMaps, podemos poner un mapa vacío o un placeholder
-    if (!url) return `<div style="padding:20px; text-align:center;">Mapa no disponible</div>`;
-    
-    return `<iframe src="${url}" width="100%" height="100%"></iframe>`;
-}
 
 const dayDetails = { 
     1: { title: "Tokio (Shinjuku)", date: "Mié 09 Sept", plan: ["12:55 - Llegada al aeropuerto.", "Traslado aeropuerto-hotel (1h20min).", "Check-in hotel.", "19:00 - Free-Tour Shinjuku (2h45min)"], food: "Ichiran Ramen.", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", photos: ["media/Narita.jpg", "media/Shinjuku de día.jpg"], mapImg: "media/Mapas/ruta_dia1.png" }, 
@@ -349,7 +351,7 @@ function openDay(id) {
     if (!data) return; 
     
     document.getElementById('modalTitle').innerText = data.title; 
-    document.getElementById('modalMap').innerHTML = getMapEmbed(data.mapUrl);
+	const mapContainer = document.getElementById('modalMapIframe');
 
 	const foodUl = document.getElementById('modalFood');
 	foodUl.innerHTML = '';
@@ -359,12 +361,16 @@ function openDay(id) {
     foodUl.appendChild(li);
 }
 
-	const mapDiv = document.getElementById('modalMap');
-	if (data.mapImg) {
-		mapDiv.innerHTML = `<img src="${data.mapImg}" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" onclick="window.open('https://www.google.com/maps/search/?api=1&query=Hotel+Gracery+Shinjuku6')">`;
-	} else {
-		mapDiv.innerHTML = `<div style="padding:20px; text-align:center;">Mapa no disponible</div>`;
-	}
+const mapImg = document.getElementById('modalMapImg');
+if(data.mapImg && mapImg) {
+    mapImg.src = data.mapImg;
+    mapImg.style.display = 'block';
+	mapImg.onclick = () => {
+		openViewer(data.mapImg); 
+	};
+} else if (mapImg) {
+    mapImg.style.display = 'none';
+}
 
     const planUl = document.getElementById('modalPlan'); 
     planUl.innerHTML = ''; 
@@ -407,23 +413,25 @@ const photoDiv = document.getElementById('modalPhotos');
     });
 
 const hImg = document.getElementById('hotelImg');
-if(data.hotelImg) {
-    hImg.src = data.hotelImg;
-    hImg.style.display = 'block';
-    hImg.style.objectFit = 'contain'; // Asegura que se vea completa
+    if(data.hotelImg) {
+        hImg.src = data.hotelImg;
+        hImg.style.display = 'block';
+        hImg.style.objectFit = 'contain';
 
-    // Al hacer clic, abre la factura (asumiendo que se llama igual que el hotel en PDF)
-    hImg.onclick = () => {
-        // Reemplaza espacios por guiones bajos o usa el nombre exacto del archivo
-        const fileName = data.hotel.replace(/\s+/g, '_'); 
-        window.open(`hoteles/${fileName}.pdf`, '_blank');
-    };
-} else {
-    hImg.style.display = 'none';
-}
+        hImg.onclick = () => {
+            if (data.hotel) {
+                const fileName = data.hotel.replace(/\s+/g, '_'); 
+                window.open(`hoteles/${fileName}.pdf`, '_blank');
+            } else {
+                console.log("No hay PDF para este hotel");
+            }
+        };
+    } else {
+        hImg.style.display = 'none';
+    }
 
-	document.getElementById('dayModal').style.display = "block";
-} 
+    document.getElementById('dayModal').style.display = "block";
+} // Fin openDay
 
 function closeModal() { 
     document.getElementById('dayModal').style.display = "none"; 
@@ -442,7 +450,24 @@ window.onload = () => {
     });
 };
 
-window.onclick = (e) => { if (e.target.id === 'dayModal') closeModal(); } 
+// Función para abrir el visualizador de imagen
+function openViewer(src) {
+    const viewer = document.getElementById('imageViewer');
+    const fullImg = document.getElementById('fullResImage');
+    fullImg.src = src;
+    viewer.style.display = "flex"; 
+}
+
+// Función para cerrar el visualizador
+function closeViewer() {
+    document.getElementById('imageViewer').style.display = "none";
+}
+
+// Manejador de clics en la ventana para cerrar modales
+window.onclick = (e) => { 
+    if (e.target.id === 'dayModal') closeModal(); 
+    if (e.target.id === 'imageViewer') closeViewer(); 
+}
 </script> 
 
 </body> 
