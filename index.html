@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Japón 2026</title> 
     <style> 
-:root { 
-            --jp-red: #ff4d6d; /* Un rojo un poco más brillante para destacar en oscuro */
-            --jp-black: #f8f9fa; /* Ahora el texto principal es claro */
-            --jp-white: #121212; /* Fondo de la página oscuro */
-            --card-bg: #1e1e1e; /* Fondo de tarjetas */
+        :root { 
+            --jp-red: #ff4d6d; 
+            --jp-black: #f8f9fa; 
+            --jp-white: #121212; 
+            --card-bg: #1e1e1e; 
             --overlay: rgba(0,0,0,0.85); 
             --border-color: #333333;
         } 
@@ -76,9 +76,7 @@
             border-left: 6px solid var(--jp-red); 
             cursor: pointer; 
             transition: all 0.2s ease; 
-            border-top: 1px solid #333;
-            border-right: 1px solid #333;
-            border-bottom: 1px solid #333;
+            border: 1px solid #333;
         } 
 
         .day-card:hover { transform: translateX(5px); background: #252525; } 
@@ -110,7 +108,7 @@
         .status-stay { background: #343a40; color: #dee2e6; }
         .status-send { background: #4d0013; color: #ffb3c1; }
         .status-receive { background: #0a2e1f; color: #75b798; }
-		.status-backpack { background: #082a5e; color: #9ec5fe; }
+        .status-backpack { background: #082a5e; color: #9ec5fe; }
 
         .modal { 
             display: none; 
@@ -140,68 +138,36 @@
         }
 
         .detail-section { margin-top: 25px; } 
-        .detail-section h3 { border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; color: var(--jp-red); font-size: 1.1rem; } 
+        .detail-section h3 { border-bottom: 2px solid #333; padding-bottom: 8px; color: var(--jp-red); font-size: 1.1rem; } 
         
-		.map-container img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover; /* Esto hace que la imagen llene el espacio sin deformarse */
-			display: block;
+        .map-container img {
+            width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+            display: block;
+        }
+
+        #imageViewer {
+            display:none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            align-items:center; 
+            justify-content:center; 
+            background-color: rgba(0,0,0,0.9);
+            z-index: 2000;
 		}
-
-        .map-container iframe { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-        } 
-
-        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; } 
-        .photo-grid img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; background: #f0f0f0; } 
 		
-		/* Estilos para el contenedor de la foto y el texto */
-.photo-item {
-    position: relative;
-    cursor: pointer;
-    overflow: hidden;
-    border-radius: 10px;
-}
-
-.photo-item img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    transition: opacity 0.3s ease;
-    display: block;
-}
-
-.photo-filename {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    /* --- Ajustes de tamaño y estilo --- */
-    font-size: 1.4rem; 
-    font-weight: 800; 
-    color: var(--jp-red); 
-    /* ---------------------------------- */
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    width: 95%;
-    word-wrap: break-word;
-    /* Un pequeño sombreado blanco ayuda a que se lea mejor si la foto es oscura */
-    text-shadow: 0 0 10px rgba(255,255,255,0.8);
-}
-
-/* Estado cuando se hace click */
-.photo-item.show-name img {
-    opacity: 0.15; /* Casi transparente */
-}
-
-.photo-item.show-name .photo-filename {
-    opacity: 1;
-}
+		#hotelImg {
+			width: 100%;
+			/* Relación de aspecto 1100:600 aproximada */
+			aspect-ratio: 1100 / 600; 
+			object-fit: fill; /* Recorta la imagen para que rellene el espacio sin estirarse */
+			border-radius: 12px;
+			margin-top: 10px;
+			display: none;
+			cursor: pointer;
+			border: 1px solid #333;
+        }
     </style> 
 </head> 
 <body> 
@@ -217,66 +183,21 @@
 </div>
 
 <div id="planning" class="tab-content active"> 
-    <div class="day-card" onclick="openDay(1)"> 
-        <span class="date">Miércoles 09 Sept</span> 
-        <span class="location">🛫 Llegada a Tokio</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(2)"> 
-        <span class="date">Jueves 10 Sept</span> 
-        <span class="location">🗼 Tokio: Shinjuku y Shibuya</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(3)"> 
-        <span class="date">Viernes 11 Sept</span> 
-        <span class="location">🎮 Tokio: Cultura Pop - Daikoku</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(4)"> 
-        <span class="date">Sábado 12 Sept</span> 
-        <span class="location">🗻 Tokio → Fuji → Tokio</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(5)"> 
-        <span class="date">Domingo 13 Sept</span> 
-        <span class="location">🚄 Tokio → Kioto</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(6)"> 
-        <span class="date">Lunes 14 Sept</span> 
-        <span class="location">⛩️ Kioto</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(7)"> 
-        <span class="date">Martes 15 Sept</span> 
-        <span class="location">⛩️ Kioto</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(8)"> 
-        <span class="date">Miércoles 16 Sept</span> 
-        <span class="location">🦌 Kioto → Nara → Osaka</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(9)"> 
-        <span class="date">Jueves 17 Sept</span> 
-        <span class="location">🏯 Osaka</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(10)"> 
-        <span class="date">Viernes 18 Sept</span> 
-        <span class="location">🏯 Osaka</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(11)"> 
-        <span class="date">Sábado 19 Sept</span> 
-        <span class="location">✈️ Osaka → Okinawa (Tokashiki)</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(12)"> 
-        <span class="date">Domingo 20 Sept</span> 
-        <span class="location">🐋 Okinawa</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(13)"> 
-        <span class="date">Lunes 21 Sept</span> 
-        <span class="location">🐋 Okinawa</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(14)"> 
-        <span class="date">Martes 22 Sept</span> 
-        <span class="location">✈️ Okinawa → Tokyo</span> 
-    </div> 
-    <div class="day-card" onclick="openDay(15)"> 
-        <span class="date">Miércoles 23 Sept</span> 
-        <span class="location">🏠 Vuelo de regreso</span> 
-    </div> 
+    <div class="day-card" onclick="openDay(1)"> <span class="date">Miércoles 09 Sept</span> <span class="location">🛫 Llegada a Tokio</span> </div> 
+    <div class="day-card" onclick="openDay(2)"> <span class="date">Jueves 10 Sept</span> <span class="location">🗼 Tokio: Shinjuku y Shibuya</span> </div> 
+    <div class="day-card" onclick="openDay(3)"> <span class="date">Viernes 11 Sept</span> <span class="location">🎮 Tokio: Cultura Pop - Daikoku</span> </div> 
+    <div class="day-card" onclick="openDay(4)"> <span class="date">Sábado 12 Sept</span> <span class="location">🗻 Tokio → Fuji → Tokio</span> </div> 
+    <div class="day-card" onclick="openDay(5)"> <span class="date">Domingo 13 Sept</span> <span class="location">🚄 Tokio → Kioto</span> </div> 
+    <div class="day-card" onclick="openDay(6)"> <span class="date">Lunes 14 Sept</span> <span class="location">⛩️ Kioto</span> </div> 
+    <div class="day-card" onclick="openDay(7)"> <span class="date">Martes 15 Sept</span> <span class="location">⛩️ Kioto</span> </div> 
+    <div class="day-card" onclick="openDay(8)"> <span class="date">Miércoles 16 Sept</span> <span class="location">🦌 Kioto → Nara → Osaka</span> </div> 
+    <div class="day-card" onclick="openDay(9)"> <span class="date">Jueves 17 Sept</span> <span class="location">🏯 Osaka</span> </div> 
+    <div class="day-card" onclick="openDay(10)"> <span class="date">Viernes 18 Sept</span> <span class="location">🏯 Osaka</span> </div> 
+    <div class="day-card" onclick="openDay(11)"> <span class="date">Sábado 19 Sept</span> <span class="location">✈️ Osaka → 🌊 Okinawa</span> </div> 
+    <div class="day-card" onclick="openDay(12)"> <span class="date">Domingo 20 Sept</span> <span class="location">🌊 Okinawa</span> </div> 
+    <div class="day-card" onclick="openDay(13)"> <span class="date">Lunes 21 Sept</span> <span class="location">🌊 Okinawa</span> </div> 
+    <div class="day-card" onclick="openDay(14)"> <span class="date">Martes 22 Sept</span> <span class="location">✈️ Okinawa → 🗼 Tokio</span> </div> 
+    <div class="day-card" onclick="openDay(15)"> <span class="date">Miércoles 23 Sept</span> <span class="location">🏠 Vuelo de regreso</span> </div> 
 </div> 
 
 <div id="maletas" class="tab-content">
@@ -298,34 +219,28 @@
             <ul id="modalPlan"></ul> 
         </div> 
 
-		<div class="detail-section"> 
-			<h3>📍 Recorrido del día</h3> 
-			<div class="map-container">
-				<img id="modalMapImg" src="" style="width: 100%; border-radius: 12px; display: none; cursor: pointer;">
-				<div id="modalMapIframe"></div> 
-			</div> 
-		</div>
-
         <div class="detail-section"> 
-            <h3>📸 Fotos</h3> 
-            <div id="modalPhotos" class="photo-grid"></div> 
-        </div> 
+            <h3>📍 Recorrido del día</h3> 
+            <div class="map-container">
+                <img id="modalMapImg" src="" style="display: none;">
+            </div> 
+        </div>
 
         <div class="detail-section"> 
             <h3>🥢 Dónde comer</h3> 
             <ul id="modalFood"></ul> 
         </div> 
 
-		<div class="detail-section"> 
-			<h3>🏨 Hotel</h3> 
-			<img id="hotelImg" src="" style="width: 100%; height: auto; max-height: 250px; object-fit: cover; border-radius: 12px; margin-top: 5px; display: none; cursor: pointer;">
-		</div>
+        <div class="detail-section"> 
+            <h3>🏨 Hotel</h3> 
+            <img id="hotelImg" src="">
+        </div>
     </div> 
 </div> 
 
-<div id="imageViewer" class="modal" style="display:none; align-items:center; justify-content:center; background-color: rgba(0,0,0,0.9);">
-    <span class="close-modal" onclick="closeViewer()" style="color: white; z-index: 1001;">×</span>
-    <img id="fullResImage" src="" style="max-width: 95%; max-height: 90vh; border-radius: 8px; margin: auto; display: block;">
+<div id="imageViewer" onclick="closeViewer()">
+    <span class="close-modal">×</span>
+    <img id="fullResImage" src="" style="max-width: 95%; max-height: 90vh; border-radius: 8px;">
 </div>
 
 <script> 
@@ -336,216 +251,33 @@ function showTab(event, tabId) {
     event.currentTarget.classList.add('active');
 }
 
-
 const dayDetails = { 
-1: {
-	title: "Tokio (Shinjuku)",
-	date: "Mié 09 Sept",
-	plan: ["12:55 - Llegada al aeropuerto.", "Traslado aeropuerto-hotel (1h20min).", "Check-in hotel.", "19:00 - Free-Tour Shinjuku (2h45min)"],
-	food: "Ichiran Ramen.",
-	hotelImg: "media/Hoteles/Tokio.png",
-	status: "stay",
-	label: "🧳 En hotel",
-	photos: ["media/Narita.jpg", "media/Shinjuku de día.jpg"],
-	mapImg: "media/Mapas/ruta_dia1.png" }, 
-
-2: {
-	title: "Asakusa y Shibuya, Tokio",
-	date: "Jue 10 Sept",
-	plan: ["⛩️06:00 - Templo Sensō-ji (Gratis)", "🥐07:30 - Desayunar en Sumida Park", "🛍️09:00 - Calle Nakamise (Tiendas).", "🚇35min: Asakusa Sta. - Shibuya (1,40€)", "📷12:00 - Cruce de Shibuya", "🍜13:00-15:00 - Comer y descansar", "⛩️15:00-17:00 - Santuario Meiji", "🚶🏻35min: Vuelta a Shinjuku","🛍️18:30 - Tarde por Shinjuku (Compras)"],
-	food: "Desayuno: Street food en Nakamise.",
-	hotel: "Gracery Shinjuku",
-	hotelImg: "media/Hoteles/Tokio.png",
-	status: "stay",
-	label: "🧳 En hotel",
-	photos: ["media/Senjoji.jpg", "media/Nakamise.jpg", "media/Shibuya.jpg", "media/Meiji.jpg"],
-	mapImg: "media/Mapas/ruta_dia2.png" }, 
-
-3: {
-	title: "Akihabara y Harajuku, Tokio",
-	date: "Vie 11 Sept",
-	plan: ["Santuario Meiji.", "Takeshita Street.", "Akihabara."],
-	food: "Maid Cafe.",
-	hotel: "Gracery Shinjuku",
-	hotelImg: "media/Hoteles/Tokio.png",
-	status: "send",
-	label: "📤 Enviar a Kioto",
-	photos: ["media/Daikoku.jpg"] }, 
-
-4: {
-	title: "Monte Fuji y Hakone",
-	date: "Sáb 12 Sept",
-	plan: ["Excursión Fuji.", "Lago Ashi."],
-	food: "Kuro-tamago.",
-	hotel: "Gracery Shinjuku",
-	hotelImg: "media/Hoteles/Tokio.png",
-	status: "backpack",
-	label: "🎒 Mochila",
-	photos: ["https://placehold.co/300x200?text=Monte+Fuji"] }, 
-
-5: { 
-    title: "Llegada y atmósfera nocturna, Kioto", 
-    date: "Dom 13 Sept", 
-    plan: ["🚄 12:00 - Llegada desde Tokio", "🏮 Tarde: Paseo por Gion y Calle Hanamikoji", "👘 Avistamiento de Maikos (respetuoso)", "🌊 Noche: Cena en Pontocho junto al río Kamo", "🏮 Farolillos y ambiente tradicional"], 
-    food: "Cena: Restaurantes tradicionales en Pontocho.", 
-    hotel: "Gracery Shinjuku", 
-    hotelImg: "media/Hoteles/Tokio.png", 
-    status: "receive", 
-    label: "📥 Recibir maleta", 
-    photos: ["media/Gion.jpg", "media/Pontocho.jpg"], 
-    mapImg: "media/Mapas/ruta_dia1.png" 
-},
-
-6: { 
-    title: "Templos, Historia y Sabores", 
-    date: "Lun 14 Sept", 
-    plan: ["⛩️ 07:00 - Templo Kiyomizu-dera", "🚶🏻 Mañana: Sannenzaka y Ninenzaka", "☕ Starbucks Tradicional (Tatami)", "🍱 12:00 - Almuerzo en Mercado de Nishiki", "🏰 Tarde: Castillo de Nijo (Suelo de ruiseñor)"], 
-    food: "Almuerzo: Unagi o croquetas en Mercado Nishiki.", 
-    hotel: "Gracery Shinjuku", 
-    hotelImg: "media/Hoteles/Tokio.png", 
-    status: "stay", 
-    label: "🧳 En hotel", 
-    photos: ["media/Kiyomizu.jpg", "media/Nishiki.jpg", "media/Nijo.jpg"], 
-    mapImg: "media/Mapas/ruta_dia2.png" 
-},
-
-7: { 
-    title: "Kioto Zen y Arashiyama", 
-    date: "Mar 15 Sept", 
-    plan: ["🎋 07:30 - Bosque de Bambú de Arashiyama", "🐒 Mañana: Monkey Park Iwatayama", "🌉 Paseo por puente Togetsukyo", "✨ Tarde: Kinkaku-ji (Pabellón Dorado)", "📸 Atardecer frente al templo de oro"], 
-    food: "Recomendado: Yudofu (tofu hervido) en Arashiyama.", 
-    hotel: "Gracery Shinjuku", 
-    hotelImg: "media/Hoteles/Tokio.png", 
-    status: "send", 
-    label: "📤 Enviar a Kioto", 
-    photos: ["media/Arashiyama.jpg", "media/Monos.jpg", "media/Kinkakuji.jpg"], 
-    mapImg: "media/Mapas/ruta_dia3.png" 
-},
-
-8: { 
-    title: "Torii, Ciervos y Salto a Osaka", 
-    date: "Mié 16 Sept", 
-    plan: ["⛩️ 06:30 - Fushimi Inari (Miles de Torii)", "🚄 10:00 - Tren a Nara (45 min)", "🦌 Todai-ji (Gran Buda) y Parque de Nara", "🏮 Santuario Kasuga Taisha", "🚄 17:00 - Tren a Osaka (50 min)", "🌌 Noche: Neones en Dotonbori"], 
-    food: "Snack: Galletas Shika-senbei para los ciervos.", 
-    hotel: "Hotel en Osaka", 
-    hotelImg: "media/Hoteles/Osaka.png", 
-    status: "backpack", 
-    label: "🎒 Mochila", 
-    photos: ["media/Fushimi.jpg", "media/Nara.jpg", "media/Dotonbori.jpg"], 
-    mapImg: "media/Mapas/ruta_dia4.png" 
-},
-
-9: { 
-    title: "Universal Studios Japan", 
-    date: "Jue 17 Sept", 
-    plan: ["🎢 Mañana en USJ (Super Nintendo World 🍄).", "🌇 Tarde en Umeda Sky Building."], 
-    food: "🍜 Ramen en zona Umeda.", 
-    hotel: "Hotel Osaka", 
-    hotelImg: "media/Hoteles/Tokio.png", 
-    status: "receive", 
-    label: "📥 Recibir maleta", 
-    photos: ["media/USJ.jpg"] 
-}, 
-
-10: { 
-    title: "Castillo de Osaka y Shinsekai", 
-    date: "Vie 18 Sept", 
-    plan: ["🏯 Castillo de Osaka.", "🐟 Mercado Kuromon Ichiba.", "🏮 Amerikamura y Shinsekai."], 
-    food: "🍢 Kushikatsu en Shinsekai.", 
-    hotel: "Hotel Osaka", 
-    hotelImg: "media/Hoteles/Tokio.png", 
-    status: "stay", 
-    label: "🧳 En hotel", 
-    photos: ["media/Castillo_Osaka.jpg"] 
-}, 
-
-11: { 
-    title: "Despedida de Osaka y Okinawa", 
-    date: "Sáb 19 Sept", 
-    plan: ["⛩️ Templo Shitennoji.", "🐧 Compras en Don Quijote.", "✈️ Vuelo hacia Okinawa 🏝️."], 
-    food: "🍰 Tarta de queso Pablo.", 
-    hotel: "Hacia Okinawa", 
-    hotelImg: "media/Hoteles/Tokio.png", 
-    status: "send", 
-    label: "📤 Enviar a Tokio", 
-    photos: [] 
-},
-
-12: { 
-    title: "Tokashiki, Okinawa", 
-    date: "Dom 20 Sept", 
-    plan: ["Vuelo a Naha.", "Ferry a Tokashiki."], 
-    food: "Okinawa Soba.", 
-    hotel: "Hotel Tokashiki", 
-    hotelImg: "media/Hoteles/Tokio.png", 
-    status: "backpack", 
-    label: "🎒 Mochila", 
-    photos: ["media/Tokashiki.jpg"] 
-}, 
-
-13: { 
-    title: "Okinawa (Playas)", 
-    date: "Lun 21 Sept", 
-    plan: ["Acuario Churaumi.", "Relajación."], 
-    food: "Blue Seal Ice Cream.", 
-    hotel: "Hotel Naha", 
-    hotelImg: "media/Hoteles/Tokio.png", 
-    status: "backpack", 
-    label: "🎒 Mochila", 
-    photos: [] 
-}, 
-
-14: { 
-    title: "Tokio (Última Noche)", 
-    date: "Mar 22 Sept", 
-    plan: ["Vuelo a Tokio.", "Compras Ginza."], 
-    food: "Sushi Premium.", 
-    hotel: "Hotel Tokio", 
-    hotelImg: "media/Hoteles/Tokio.png", 
-    status: "receive", 
-    label: "📥 Recibir maleta", 
-    photos: [] 
-}, 
-
-15: { 
-    title: "Vuelo de regreso", 
-    date: "Mié 23 Sept", 
-    plan: ["Traslado aeropuerto.", "Vuelo."], 
-    food: "Bento.", 
-    hotel: "N/A", 
-    hotelImg: "media/Hoteles/Tokio.png", 
-    status: "stay", 
-    label: "🧳 En hotel", 
-    photos: [] 
-}
+    // Los datos se mantienen iguales pero la lógica ya no buscará .photos
+    1: { title: "Tokio (Shinjuku)", date: "Mié 09 Sept", plan: ["12:55 - Llegada al aeropuerto.", "Traslado aeropuerto-hotel (1h20min).", "Check-in hotel.", "19:00 - Free-Tour Shinjuku (2h45min)"], food: "Ichiran Ramen.", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", mapImg: "media/Mapas/ruta_dia1.png" }, 
+    2: { title: "Asakusa y Shibuya, Tokio", date: "Jue 10 Sept", plan: ["⛩️06:00 - Templo Sensō-ji", "🥐07:30 - Desayuno Sumida Park", "📷12:00 - Cruce de Shibuya", "⛩️15:00-17:00 - Santuario Meiji"], food: "Street food en Nakamise.", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", mapImg: "media/Mapas/ruta_dia2.png" },
+    3: { title: "Akihabara y Harajuku, Tokio", date: "Vie 11 Sept", plan: ["Santuario Meiji.", "Takeshita Street.", "Akihabara."], food: "Maid Cafe.", hotelImg: "media/Hoteles/Tokio.png", status: "send", label: "📤 Enviar a Kioto" },
+    4: { title: "Monte Fuji y Hakone", date: "Sáb 12 Sept", plan: ["Excursión Fuji.", "Lago Ashi."], food: "Kuro-tamago.", hotelImg: "media/Hoteles/Tokio.png", status: "backpack", label: "🎒 Mochila" },
+    5: { title: "Llegada a Kioto", date: "Dom 13 Sept", plan: ["🚄 12:00 - Llegada", "🏮 Paseo por Gion", "🌊 Cena en Pontocho"], food: "Restaurantes tradicionales en Pontocho.", hotelImg: "media/Hoteles/Kioto.png", status: "receive", label: "📥 Recibir maleta", mapImg: "media/Mapas/ruta_dia1.png" },
+    6: { title: "Templos, Historia y Sabores", date: "Lun 14 Sept", plan: ["⛩️ 07:00 - Templo Kiyomizu-dera", "🍱 12:00 - Mercado de Nishiki", "🏰 Castillo de Nijo"], food: "Unagi o croquetas en Mercado Nishiki.", hotelImg: "media/Hoteles/Kioto.png", status: "stay", label: "🧳 En hotel", mapImg: "media/Mapas/ruta_dia2.png" },
+    7: { title: "Kioto Zen y Arashiyama", date: "Mar 15 Sept", plan: ["🎋 07:30 - Bosque de Bambú", "🐒 Monkey Park Iwatayama", "✨ Tarde: Kinkaku-ji"], food: "Yudofu en Arashiyama.", hotelImg: "media/Hoteles/Kioto.png", status: "send", label: "📤 Enviar a Osaka", mapImg: "media/Mapas/ruta_dia3.png" },
+    8: { title: "Torii, Ciervos y Salto a Osaka", date: "Mié 16 Sept", plan: ["⛩️ 06:30 - Fushimi Inari", "🦌 Todai-ji y Parque de Nara", "🌌 Noche: Neones en Dotonbori"], food: "Galletas Shika-senbei para ciervos.", hotelImg: "media/Hoteles/Osaka.png", status: "backpack", label: "🎒 Mochila", mapImg: "media/Mapas/ruta_dia4.png" },
+    9: { title: "Universal Studios Japan", date: "Jue 17 Sept", plan: ["🎢 Mañana en USJ (Super Nintendo World 🍄).", "🌇 Tarde en Umeda Sky Building."], food: "Ramen en zona Umeda.", hotelImg: "media/Hoteles/Osaka.png", status: "receive", label: "📥 Recibir maleta" },
+    10: { title: "Castillo de Osaka y Shinsekai", date: "Vie 18 Sept", plan: ["🏯 Castillo de Osaka.", "🐟 Mercado Kuromon.", "🏮 Shinsekai."], food: "Kushikatsu en Shinsekai.", hotelImg: "media/Hoteles/Osaka.png", status: "stay", label: "🧳 En hotel" },
+    11: { title: "Hacia Okinawa", date: "Sáb 19 Sept", plan: ["⛩️ Templo Shitennoji.", "✈️ Vuelo hacia Okinawa 🏝️."], food: "Tarta de queso Pablo.", hotelImg: "media/Hoteles/Okinawa.png", status: "send", label: "📤 Enviar a Tokio" },
+    12: { title: "Okinawa", date: "Dom 20 Sept", plan: ["Ferry a Tokashiki.", "Playa."], food: "Okinawa Soba.", hotelImg: "media/Hoteles/Okinawa.png", status: "backpack", label: "🎒 Mochila" },
+    13: { title: "Okinawa", date: "Lun 21 Sept", plan: ["Acuario Churaumi.", "Relajación."], food: "Blue Seal Ice Cream.", hotelImg: "media/Hoteles/Okinawa.png", status: "backpack", label: "🎒 Mochila" },
+    14: { title: "Okinawa y vuelta a Tokio", date: "Mar 22 Sept", plan: ["Vuelo a Tokio.", "Compras Ginza."], food: "Sushi Premium.", hotelImg: "media/Hoteles/Tokio.png", status: "receive", label: "📥 Recibir maleta" },
+    15: { title: "Vuelo de regreso", date: "Mié 23 Sept", plan: ["Traslado aeropuerto.", "Vuelo."], food: "Bento.", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel" }
 }; 
 
 function openDay(id) { 
     const data = dayDetails[id]; 
     if (!data) return; 
     
+    // 1. Establecer el título del modal
     document.getElementById('modalTitle').innerText = data.title; 
-	const mapContainer = document.getElementById('modalMapIframe');
 
-	const foodUl = document.getElementById('modalFood');
-	foodUl.innerHTML = '';
-	if (data.food) {
-    let li = document.createElement('li');
-    li.innerText = data.food;
-    foodUl.appendChild(li);
-}
-
-const mapImg = document.getElementById('modalMapImg');
-if(data.mapImg && mapImg) {
-    mapImg.src = data.mapImg;
-    mapImg.style.display = 'block';
-	mapImg.onclick = () => {
-		openViewer(data.mapImg); 
-	};
-} else if (mapImg) {
-    mapImg.style.display = 'none';
-}
-
+    // 2. Rellenar el Plan Detallado
     const planUl = document.getElementById('modalPlan'); 
     planUl.innerHTML = ''; 
     data.plan.forEach(p => { 
@@ -554,62 +286,69 @@ if(data.mapImg && mapImg) {
         planUl.appendChild(li); 
     }); 
 
-const photoDiv = document.getElementById('modalPhotos'); 
-    photoDiv.innerHTML = ''; 
-    data.photos.forEach(src => { 
-        // 1. Extraer el nombre del archivo
-        // Tomamos lo que hay tras la última '/' y quitamos la extensión
-        const filenameWithExt = src.split('/').pop();
-        const filename = filenameWithExt.substring(0, filenameWithExt.lastIndexOf('.')) || filenameWithExt;
-
-        // 2. Crear el contenedor
-        let container = document.createElement('div');
-        container.className = 'photo-item';
-        
-        // 3. Crear la imagen
-        let img = document.createElement('img'); 
-        img.src = src; 
-        
-        // 4. Crear el texto con el nombre
-        let nameSpan = document.createElement('span');
-        nameSpan.className = 'photo-filename';
-        nameSpan.innerText = filename;
-
-        // 5. Evento click para togglear la clase
-        container.onclick = () => {
-            container.classList.toggle('show-name');
+    // 3. Configurar la imagen del Recorrido del día (Mapa)
+    const mapImg = document.getElementById('modalMapImg');
+    if(data.mapImg) {
+        mapImg.src = data.mapImg;
+        mapImg.style.display = 'block';
+        // Al hacer clic en el mapa, se abre el visualizador a pantalla completa
+        mapImg.onclick = () => {
+            openViewer(data.mapImg); 
         };
+    } else {
+        mapImg.style.display = 'none';
+    }
 
-        // Ensamblar
-        container.appendChild(img);
-        container.appendChild(nameSpan);
-        photoDiv.appendChild(container); 
-    });
+    // 4. Rellenar Dónde comer
+    const foodUl = document.getElementById('modalFood');
+    foodUl.innerHTML = '';
+    if (data.food) {
+        let li = document.createElement('li');
+        li.innerText = data.food;
+        foodUl.appendChild(li);
+    }
 
-const hImg = document.getElementById('hotelImg');
+    // 5. Configurar la imagen del Hotel y su enlace al PDF
+    const hImg = document.getElementById('hotelImg');
     if(data.hotelImg) {
         hImg.src = data.hotelImg;
         hImg.style.display = 'block';
-        hImg.style.objectFit = 'contain';
+        
+        // Estilos para forzar el formato 1100x600 visualmente
+        hImg.style.width = '100%';
+        hImg.style.aspectRatio = '1100 / 600';
+        hImg.style.objectFit = 'fill';
 
+        // Lógica para abrir el PDF:
+        // Toma la ruta "media/Hoteles/Tokio.png" y la convierte en "hoteles/Tokio.pdf"
         hImg.onclick = () => {
-            if (data.hotel) {
-                const fileName = data.hotel.replace(/\s+/g, '_'); 
-                window.open(`hoteles/${fileName}.pdf`, '_blank');
-            } else {
-                console.log("No hay PDF para este hotel");
-            }
+            // Extraemos solo el nombre del archivo (ej: Tokio.png)
+            const fileNameWithExt = data.hotelImg.split('/').pop();
+            // Cambiamos la extensión .png (o la que sea) por .pdf
+            const fileName = fileNameWithExt.substring(0, fileNameWithExt.lastIndexOf('.')) + '.pdf';
+            // Abrimos el PDF ubicado en la carpeta hoteles/
+            window.open(`hoteles/${fileName}`, '_blank');
         };
     } else {
         hImg.style.display = 'none';
     }
 
+    // 6. Mostrar el modal
     document.getElementById('dayModal').style.display = "block";
-} // Fin openDay
+}
 
 function closeModal() { 
     document.getElementById('dayModal').style.display = "none"; 
 } 
+
+function openViewer(src) {
+    document.getElementById('fullResImage').src = src;
+    document.getElementById('imageViewer').style.display = "flex"; 
+}
+
+function closeViewer() {
+    document.getElementById('imageViewer').style.display = "none";
+}
 
 window.onload = () => {
     const luggage = document.getElementById('luggageList');
@@ -624,23 +363,8 @@ window.onload = () => {
     });
 };
 
-// Función para abrir el visualizador de imagen
-function openViewer(src) {
-    const viewer = document.getElementById('imageViewer');
-    const fullImg = document.getElementById('fullResImage');
-    fullImg.src = src;
-    viewer.style.display = "flex"; 
-}
-
-// Función para cerrar el visualizador
-function closeViewer() {
-    document.getElementById('imageViewer').style.display = "none";
-}
-
-// Manejador de clics en la ventana para cerrar modales
 window.onclick = (e) => { 
     if (e.target.id === 'dayModal') closeModal(); 
-    if (e.target.id === 'imageViewer') closeViewer(); 
 }
 </script> 
 
