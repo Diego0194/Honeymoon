@@ -140,6 +140,17 @@
         .detail-section { margin-top: 25px; } 
         .detail-section h3 { border-bottom: 2px solid #333; padding-bottom: 8px; color: var(--jp-red); font-size: 1.1rem; } 
         
+        /* Estilos para los links interesantes */
+        .detail-section ul li a {
+            color: #ffb3c1;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .detail-section ul li a:hover {
+            color: var(--jp-red);
+            text-decoration: underline;
+        }
+
         .map-container img {
             width: 100%;
             border-radius: 12px;
@@ -159,9 +170,8 @@
 		
 		#hotelImg {
 			width: 100%;
-			/* Relación de aspecto 1100:600 aproximada */
 			aspect-ratio: 1100 / 600; 
-			object-fit: fill; /* Recorta la imagen para que rellene el espacio sin estirarse */
+			object-fit: fill; 
 			border-radius: 12px;
 			margin-top: 10px;
 			display: none;
@@ -227,7 +237,7 @@
         </div>
 
         <div class="detail-section"> 
-            <h3>🥢 Dónde comer</h3> 
+            <h3>💡 Links interesantes</h3> 
             <ul id="modalFood"></ul> 
         </div> 
 
@@ -251,33 +261,198 @@ function showTab(event, tabId) {
     event.currentTarget.classList.add('active');
 }
 
+
 const dayDetails = { 
-    // Los datos se mantienen iguales pero la lógica ya no buscará .photos
-    1: { title: "Tokio (Shinjuku)", date: "Mié 09 Sept", plan: ["12:55 - Llegada al aeropuerto.", "Traslado aeropuerto-hotel (1h20min).", "Check-in hotel.", "19:00 - Free-Tour Shinjuku (2h45min)"], food: "Ichiran Ramen.", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", mapImg: "media/Mapas/ruta_dia1.png" }, 
-    2: { title: "Asakusa y Shibuya, Tokio", date: "Jue 10 Sept", plan: ["⛩️06:00 - Templo Sensō-ji", "🥐07:30 - Desayuno Sumida Park", "📷12:00 - Cruce de Shibuya", "⛩️15:00-17:00 - Santuario Meiji"], food: "Street food en Nakamise.", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", mapImg: "media/Mapas/ruta_dia2.png" },
-	4: { title: "Excursión a Nikko", date: "Vie 11 Sept", plan: ["07:45: Planta baja del banco Mitsui Sumitomo", "Puente Shinkyo.", "Santuario Toshogu.", "Cataratas Kegon.", "Lago Chuzenji.", "18:00 - Shinjuku"], food: "Buscar comida en Nikko.", hotelImg: "media/Hoteles/Tokio.png", status: "send", label: "🎒 Mochila", mapImg: "media/Mapas/ruta_dia3.png" },
-	5: { title: "Asakusa y Shibuya, Tokio", date: "Jue 10 Sept", plan: ["⛩️06:00 - Templo Sensō-ji", "🥐07:30 - Desayuno Sumida Park", "📷12:00 - Cruce de Shibuya", "⛩️15:00-17:00 - Santuario Meiji"], food: "Street food en Nakamise.", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "📤 Enviar a Kioto", mapImg: "media/Mapas/ruta_dia4.png" },
-    5: { title: "Llegada a Kioto", date: "Dom 13 Sept", plan: ["🚄 12:00 - Llegada", "🏮 Paseo por Gion", "🌊 Cena en Pontocho"], food: "Restaurantes tradicionales en Pontocho.", hotelImg: "media/Hoteles/Kioto.png", status: "receive", label: "📥 Recibir maleta", mapImg: "media/Mapas/ruta_dia5.png" },
-    6: { title: "Templos, Historia y Sabores", date: "Lun 14 Sept", plan: ["⛩️ 07:00 - Templo Kiyomizu-dera", "🍱 12:00 - Mercado de Nishiki", "🏰 Castillo de Nijo"], food: "Unagi o croquetas en Mercado Nishiki.", hotelImg: "media/Hoteles/Kioto.png", status: "stay", label: "🧳 En hotel", mapImg: "media/Mapas/ruta_dia6.png" },
-    7: { title: "Kioto Zen y Arashiyama", date: "Mar 15 Sept", plan: ["🎋 07:30 - Bosque de Bambú", "🐒 Monkey Park Iwatayama", "✨ Tarde: Kinkaku-ji"], food: "Yudofu en Arashiyama.", hotelImg: "media/Hoteles/Kioto.png", status: "send", label: "📤 Enviar a Osaka", mapImg: "media/Mapas/ruta_dia7.png" },
-    8: { title: "Torii, Ciervos y Salto a Osaka", date: "Mié 16 Sept", plan: ["⛩️ 06:30 - Fushimi Inari", "🦌 Todai-ji y Parque de Nara", "🌌 Noche: Neones en Dotonbori"], food: "Galletas Shika-senbei para ciervos.", hotelImg: "media/Hoteles/Osaka.png", status: "backpack", label: "🎒 Mochila", mapImg: "media/Mapas/ruta_dia8.png" },
-    9: { title: "Universal Studios Japan", date: "Jue 17 Sept", plan: ["🎢 Mañana en USJ (Super Nintendo World 🍄).", "🌇 Tarde en Umeda Sky Building."], food: "Ramen en zona Umeda.", hotelImg: "media/Hoteles/Osaka.png", status: "receive", label: "📥 Recibir maleta", mapImg: "media/Mapas/ruta_dia9.png" },
-    10: { title: "Castillo de Osaka y Shinsekai", date: "Vie 18 Sept", plan: ["🏯 Castillo de Osaka.", "🐟 Mercado Kuromon.", "🏮 Shinsekai."], food: "Kushikatsu en Shinsekai.", hotelImg: "media/Hoteles/Osaka.png", status: "stay", label: "🧳 En hotel", mapImg: "media/Mapas/ruta_dia10.png" },
-    11: { title: "Hacia Okinawa", date: "Sáb 19 Sept", plan: ["⛩️ Templo Shitennoji.", "✈️ Vuelo hacia Okinawa 🏝️."], food: "Tarta de queso Pablo.", hotelImg: "media/Hoteles/Okinawa.png", status: "send", label: "📤 Enviar a Tokio", mapImg: "media/Mapas/ruta_dia11.png" },
-    12: { title: "Okinawa", date: "Dom 20 Sept", plan: ["Ferry a Tokashiki.", "Playa."], food: "Okinawa Soba.", hotelImg: "media/Hoteles/Okinawa.png", status: "backpack", label: "🎒 Mochila", mapImg: "media/Mapas/ruta_dia12.png" },
-    13: { title: "Okinawa", date: "Lun 21 Sept", plan: ["Acuario Churaumi.", "Relajación."], food: "Blue Seal Ice Cream.", hotelImg: "media/Hoteles/Okinawa.png", status: "backpack", label: "🎒 Mochila", mapImg: "media/Mapas/ruta_dia13.png" },
-    14: { title: "Okinawa y vuelta a Tokio", date: "Mar 22 Sept", plan: ["Vuelo a Tokio.", "Compras Ginza."], food: "Sushi Premium.", hotelImg: "media/Hoteles/Tokio.png", status: "receive", label: "📥 Recibir maleta", mapImg: "media/Mapas/ruta_dia14.png" },
-    15: { title: "Vuelo de regreso", date: "Mié 23 Sept", plan: ["Traslado aeropuerto.", "Vuelo."], food: "Bento.", hotelImg: "media/Hoteles/Tokio.png", status: "stay", label: "🧳 En hotel", mapImg: "media/Mapas/ruta_dia15.png" }
-}; 
+    1: { 
+        title: "Tokio (Shinjuku)", 
+        date: "Mié 09 Sept", 
+        plan: ["12:55 - Llegada al aeropuerto.", "Traslado aeropuerto-hotel (1h20min).", "Check-in hotel.", "19:00 - Free-Tour Shinjuku (2h45min)"], 
+        food: [
+            { text: "🍜 Ichiran Ramen Shinjuku", url: "https://tabelog.com" },
+            { text: "🎥 Vídeo de llegada y traslado", url: "media/videos/traslado_tokio.mp4" }
+        ], 
+        hotelImg: "media/Hoteles/Tokio.png", 
+        status: "stay", 
+        label: "🧳 En hotel", 
+        mapImg: "media/Mapas/ruta_dia1.png" 
+    }, 
+    2: { 
+        title: "Asakusa y Shibuya, Tokio", 
+        date: "Jue 10 Sept", 
+        plan: ["⛩️06:00 - Templo Sensō-ji", "🥐07:30 - Desayuno Sumida Park", "📷12:00 - Cruce de Shibuya", "⛩️15:00-17:00 - Santuario Meiji"], 
+        food: [
+            { text: "🍡 Street food en Nakamise", url: "https://example.com" },
+            { text: "🎥 Vídeo de Shibuya Crossing", url: "media/videos/shibuya.mp4" }
+        ], 
+        hotelImg: "media/Hoteles/Tokio.png", 
+        status: "stay", 
+        label: "🧳 En hotel", 
+        mapImg: "media/Mapas/ruta_dia2.png" 
+    },
+    3: { 
+        title: "Excursión a Nikko", 
+        date: "Vie 11 Sept", 
+        plan: ["07:45: Planta baja del banco Mitsui Sumitomo", "Puente Shinkyo.", "Santuario Toshogu.", "Cataratas Kegon.", "Lago Chuzenji.", "18:00 - Shinjuku"], 
+        food: [
+            { text: "Tiktok: Vídeo del plan", url: "https://www.tiktok.com/@elaineoneday/video/7552214280305741067" }
+        ], 
+        hotelImg: "media/Hoteles/Tokio.png", 
+        status: "send", 
+        label: "🎒 Mochila", 
+        mapImg: "media/Mapas/ruta_dia3.png" 
+    },
+    4: { 
+        title: "Asakusa y Shibuya, Tokio", 
+        date: "Jue 10 Sept", 
+        plan: ["⛩️06:00 - Templo Sensō-ji", "🥐07:30 - Desayuno Sumida Park", "📷12:00 - Cruce de Shibuya", "⛩️15:00-17:00 - Santuario Meiji"], 
+        food: [
+            { text: "🍡 Street food en Nakamise", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Tokio.png", 
+        status: "stay", 
+        label: "📤 Enviar a Kioto", 
+        mapImg: "media/Mapas/ruta_dia4.png" 
+    },
+    5: { 
+        title: "Llegada a Kioto", 
+        date: "Dom 13 Sept", 
+        plan: ["🚄 12:00 - Llegada", "🏮 Paseo por Gion", "🌊 Cena en Pontocho"], 
+        food: [
+            { text: "🏮 Restaurantes tradicionales en Pontocho", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Kioto.png", 
+        status: "receive", 
+        label: "📥 Recibir maleta", 
+        mapImg: "media/Mapas/ruta_dia5.png" 
+    },
+    6: { 
+        title: "Templos, Historia y Sabores", 
+        date: "Lun 14 Sept", 
+        plan: ["⛩️ 07:00 - Templo Kiyomizu-dera", "🍱 12:00 - Mercado de Nishiki", "🏰 Castillo de Nijo"], 
+        food: [
+            { text: "🍱 Unagi o croquetas en Mercado Nishiki", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Kioto.png", 
+        status: "stay", 
+        label: "🧳 En hotel", 
+        mapImg: "media/Mapas/ruta_dia6.png" 
+    },
+    7: { 
+        title: "Kioto Zen y Arashiyama", 
+        date: "Mar 15 Sept", 
+        plan: ["🎋 07:30 - Bosque de Bambú", "🐒 Monkey Park Iwatayama", "✨ Tarde: Kinkaku-ji"], 
+        food: [
+            { text: "🍵 Yudofu en Arashiyama", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Kioto.png", 
+        status: "send", 
+        label: "📤 Enviar a Osaka", 
+        mapImg: "media/Mapas/ruta_dia7.png" 
+    },
+    8: { 
+        title: "Torii, Ciervos y Salto a Osaka", 
+        date: "Mié 16 Sept", 
+        plan: ["⛩️ 06:30 - Fushimi Inari", "🦌 Todai-ji y Parque de Nara", "🌌 Noche: Neones en Dotonbori"], 
+        food: [
+            { text: "🦌 Galletas Shika-senbei para ciervos", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Osaka.png", 
+        status: "backpack", 
+        label: "🎒 Mochila", 
+        mapImg: "media/Mapas/ruta_dia8.png" 
+    },
+    9: { 
+        title: "Universal Studios Japan", 
+        date: "Jue 17 Sept", 
+        plan: ["🎢 Mañana en USJ (Super Nintendo World 🍄).", "🌇 Tarde en Umeda Sky Building."], 
+        food: [
+            { text: "🍜 Ramen en zona Umeda", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Osaka.png", 
+        status: "receive", 
+        label: "📥 Recibir maleta", 
+        mapImg: "media/Mapas/ruta_dia9.png" 
+    },
+    10: { 
+        title: "Castillo de Osaka y Shinsekai", 
+        date: "Vie 18 Sept", 
+        plan: ["🏯 Castillo de Osaka.", "🐟 Mercado Kuromon.", "🏮 Shinsekai."], 
+        food: [
+            { text: "🍢 Kushikatsu en Shinsekai", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Osaka.png", 
+        status: "stay", 
+        label: "🧳 En hotel", 
+        mapImg: "media/Mapas/ruta_dia10.png" 
+    },
+    11: { 
+        title: "Hacia Okinawa", 
+        date: "Sáb 19 Sept", 
+        plan: ["⛩️ Templo Shitennoji.", "✈️ Vuelo hacia Okinawa 🏝️."], 
+        food: [
+            { text: "🍰 Tarta de queso Pablo", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Okinawa.png", 
+        status: "send", 
+        label: "📤 Enviar a Tokio", 
+        mapImg: "media/Mapas/ruta_dia11.png" 
+    },
+    12: { 
+        title: "Okinawa", 
+        date: "Dom 20 Sept", 
+        plan: ["Ferry a Tokashiki.", "Playa."], 
+        food: [
+            { text: "🍜 Okinawa Soba", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Okinawa.png", 
+        status: "backpack", 
+        label: "🎒 Mochila", 
+        mapImg: "media/Mapas/ruta_dia12.png" 
+    },
+    13: { 
+        title: "Okinawa", 
+        date: "Lun 21 Sept", 
+        plan: ["Acuario Churaumi.", "Relajación."], 
+        food: [
+            { text: "🍦 Blue Seal Ice Cream", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Okinawa.png", 
+        status: "backpack", 
+        label: "🎒 Mochila", 
+        mapImg: "media/Mapas/ruta_dia13.png" 
+    },
+    14: { 
+        title: "Okinawa y vuelta a Tokio", 
+        date: "Mar 22 Sept", 
+        plan: ["Vuelo a Tokio.", "Compras Ginza."], 
+        food: [
+            { text: "🍣 Sushi Premium", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Tokio.png", 
+        status: "receive", 
+        label: "📥 Recibir maleta", 
+        mapImg: "media/Mapas/ruta_dia14.png" 
+    },
+    15: { 
+        title: "Vuelo de regreso", 
+        date: "Mié 23 Sept", 
+        plan: ["Traslado aeropuerto.", "Vuelo."], 
+        food: [
+            { text: "🍱 Bento", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Tokio.png", 
+        status: "stay", 
+        label: "🧳 En hotel", 
+        mapImg: "media/Mapas/ruta_dia15.png" 
+    }
+};
 
 function openDay(id) { 
     const data = dayDetails[id]; 
     if (!data) return; 
     
-    // 1. Establecer el título del modal
     document.getElementById('modalTitle').innerText = data.title; 
 
-    // 2. Rellenar el Plan Detallado
     const planUl = document.getElementById('modalPlan'); 
     planUl.innerHTML = ''; 
     data.plan.forEach(p => { 
@@ -286,54 +461,47 @@ function openDay(id) {
         planUl.appendChild(li); 
     }); 
 
-    // 3. Configurar la imagen del Recorrido del día (Mapa)
     const mapImg = document.getElementById('modalMapImg');
     if(data.mapImg) {
         mapImg.src = data.mapImg;
         mapImg.style.display = 'block';
-        // Al hacer clic en el mapa, se abre el visualizador a pantalla completa
-        mapImg.onclick = () => {
-            openViewer(data.mapImg); 
-        };
+        mapImg.onclick = () => { openViewer(data.mapImg); };
     } else {
         mapImg.style.display = 'none';
     }
 
-    // 4. Rellenar Dónde comer
+    // Lógica modificada para iterar sobre el array de links y crear elementos <a> clicables
     const foodUl = document.getElementById('modalFood');
     foodUl.innerHTML = '';
-    if (data.food) {
-        let li = document.createElement('li');
-        li.innerText = data.food;
-        foodUl.appendChild(li);
+    if (data.food && Array.isArray(data.food)) {
+        data.food.forEach(item => {
+            let li = document.createElement('li');
+            let a = document.createElement('a');
+            a.href = item.url;
+            a.innerText = item.text;
+            a.target = "_blank"; // Se abre en una pestaña nueva
+            li.appendChild(a);
+            foodUl.appendChild(li);
+        });
     }
 
-    // 5. Configurar la imagen del Hotel y su enlace al PDF
     const hImg = document.getElementById('hotelImg');
     if(data.hotelImg) {
         hImg.src = data.hotelImg;
         hImg.style.display = 'block';
-        
-        // Estilos para forzar el formato 1100x600 visualmente
         hImg.style.width = '100%';
         hImg.style.aspectRatio = '1100 / 600';
         hImg.style.objectFit = 'fill';
 
-        // Lógica para abrir el PDF:
-        // Toma la ruta "media/Hoteles/Tokio.png" y la convierte en "hoteles/Tokio.pdf"
         hImg.onclick = () => {
-            // Extraemos solo el nombre del archivo (ej: Tokio.png)
             const fileNameWithExt = data.hotelImg.split('/').pop();
-            // Cambiamos la extensión .png (o la que sea) por .pdf
             const fileName = fileNameWithExt.substring(0, fileNameWithExt.lastIndexOf('.')) + '.pdf';
-            // Abrimos el PDF ubicado en la carpeta hoteles/
             window.open(`hoteles/${fileName}`, '_blank');
         };
     } else {
         hImg.style.display = 'none';
     }
 
-    // 6. Mostrar el modal
     document.getElementById('dayModal').style.display = "block";
 }
 
