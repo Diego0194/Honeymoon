@@ -200,13 +200,13 @@
     <div class="day-card" onclick="openDay(5)"> <span class="date">Domingo 13 Sept</span> <span class="location">🚄 Tokio → Kioto</span> </div> 
     <div class="day-card" onclick="openDay(6)"> <span class="date">Lunes 14 Sept</span> <span class="location">⛩️ Kioto</span> </div> 
     <div class="day-card" onclick="openDay(7)"> <span class="date">Martes 15 Sept</span> <span class="location">⛩️ Kioto</span> </div> 
-    <div class="day-card" onclick="openDay(8)"> <span class="date">Miércoles 16 Sept</span> <span class="location">🦌 Kioto → Nara → Osaka</span> </div> 
-    <div class="day-card" onclick="openDay(9)"> <span class="date">Jueves 17 Sept</span> <span class="location">🏯 Osaka</span> </div> 
-    <div class="day-card" onclick="openDay(10)"> <span class="date">Viernes 18 Sept</span> <span class="location">🏯 Osaka</span> </div> 
-    <div class="day-card" onclick="openDay(11)"> <span class="date">Sábado 19 Sept</span> <span class="location">✈️ Osaka → 🌊 Okinawa</span> </div> 
-    <div class="day-card" onclick="openDay(12)"> <span class="date">Domingo 20 Sept</span> <span class="location">🌊 Okinawa</span> </div> 
-    <div class="day-card" onclick="openDay(13)"> <span class="date">Lunes 21 Sept</span> <span class="location">🌊 Okinawa</span> </div> 
-    <div class="day-card" onclick="openDay(14)"> <span class="date">Martes 22 Sept</span> <span class="location">✈️ Okinawa → 🗼 Tokio</span> </div> 
+    <div class="day-card" onclick="openDay(8)"> <span class="date">Miércoles 16 Sept</span> <span class="location">⛩️ Kioto → Osaka → 🌊 Okinawa</span> </div> 
+    <div class="day-card" onclick="openDay(9)"> <span class="date">Jueves 17 Sept</span> <span class="location">🌊 Okinawa</span> </div> 
+    <div class="day-card" onclick="openDay(10)"> <span class="date">Viernes 18 Sept</span> <span class="location">🌊 Okinawa</span> </div> 
+    <div class="day-card" onclick="openDay(11)"> <span class="date">Sábado 19 Sept</span> <span class="location">🌊 Okinawa → ✈️ Osaka</span> </div> 
+    <div class="day-card" onclick="openDay(12)"> <span class="date">Domingo 20 Sept</span> <span class="location">🏯 Osaka</span> </div> 
+    <div class="day-card" onclick="openDay(13)"> <span class="date">Lunes 21 Sept</span> <span class="location">🏯 Osaka</span> </div> 
+    <div class="day-card" onclick="openDay(14)"> <span class="date">Martes 22 Sept</span> <span class="location">🏯 Osaka → 🦌 Nara → 🗼 Tokio</span> </div> 
     <div class="day-card" onclick="openDay(15)"> <span class="date">Miércoles 23 Sept</span> <span class="location">🏠 Vuelo de regreso</span> </div> 
 </div> 
 
@@ -272,6 +272,7 @@ const dayDetails = {
             { text: "🎥 Vídeo de llegada y traslado", url: "media/videos/traslado_tokio.mp4" }
         ], 
         hotelImg: "media/Hoteles/Tokio.png", 
+		hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
         status: "stay", 
         label: "🧳 En hotel", 
         mapImg: "media/Mapas/ruta_dia1.png" 
@@ -284,7 +285,8 @@ const dayDetails = {
             { text: "🍡 Street food en Nakamise", url: "https://example.com" },
             { text: "🎥 Vídeo de Shibuya Crossing", url: "media/videos/shibuya.mp4" }
         ], 
-        hotelImg: "media/Hoteles/Tokio.png", 
+        hotelImg: "media/Hoteles/Tokio.png",
+		hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
         status: "stay", 
         label: "🧳 En hotel", 
         mapImg: "media/Mapas/ruta_dia2.png" 
@@ -294,11 +296,13 @@ const dayDetails = {
         date: "Vie 11 Sept", 
         plan: ["07:45: Planta baja del banco Mitsui Sumitomo", "Puente Shinkyo.", "Santuario Toshogu.", "Cataratas Kegon.", "Lago Chuzenji.", "18:00 - Shinjuku"], 
         food: [
-            { text: "Tiktok: Vídeo del plan", url: "https://www.tiktok.com/@elaineoneday/video/7552214280305741067" }
+            { text: "Tiktok: Vídeo del plan", url: "https://www.tiktok.com/@elaineoneday/video/7552214280305741067" },
+			{ text: "Entradas Klook (PDF)", url: "https://drive.google.com/open?id=1JsiWFW7rzdXPkfPWQuC-pfu015ZCgMGg&usp=drive_fs" }
         ], 
-        hotelImg: "media/Hoteles/Tokio.png", 
+        hotelImg: "media/Hoteles/Tokio.png",
+		hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
         status: "send", 
-        label: "🎒 Mochila", 
+        label: "📤 Enviar a Kioto", 
         mapImg: "media/Mapas/ruta_dia3.png" 
     },
     4: { 
@@ -309,8 +313,9 @@ const dayDetails = {
             { text: "🍡 Street food en Nakamise", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Tokio.png", 
-        status: "stay", 
-        label: "📤 Enviar a Kioto", 
+		hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
+        status: "backpack", 
+        label: "🎒 Mochila", 
         mapImg: "media/Mapas/ruta_dia4.png" 
     },
     5: { 
@@ -320,7 +325,8 @@ const dayDetails = {
         food: [
             { text: "🏮 Restaurantes tradicionales en Pontocho", url: "#" }
         ], 
-        hotelImg: "media/Hoteles/Kioto.png", 
+        hotelImg: "media/Hoteles/Kioto.png",
+		hotelUrl: "https://drive.google.com/open?id=1EO-1iwvYP2ArAdfKUrkZNN0n--XdCpI7&usp=drive_fs",
         status: "receive", 
         label: "📥 Recibir maleta", 
         mapImg: "media/Mapas/ruta_dia5.png" 
@@ -332,7 +338,8 @@ const dayDetails = {
         food: [
             { text: "🍱 Unagi o croquetas en Mercado Nishiki", url: "#" }
         ], 
-        hotelImg: "media/Hoteles/Kioto.png", 
+        hotelImg: "media/Hoteles/Kioto.png",
+		hotelUrl: "https://drive.google.com/open?id=1EO-1iwvYP2ArAdfKUrkZNN0n--XdCpI7&usp=drive_fs",
         status: "stay", 
         label: "🧳 En hotel", 
         mapImg: "media/Mapas/ruta_dia6.png" 
@@ -344,89 +351,99 @@ const dayDetails = {
         food: [
             { text: "🍵 Yudofu en Arashiyama", url: "#" }
         ], 
-        hotelImg: "media/Hoteles/Kioto.png", 
+        hotelImg: "media/Hoteles/Kioto.png",
+		hotelUrl: "https://drive.google.com/open?id=1EO-1iwvYP2ArAdfKUrkZNN0n--XdCpI7&usp=drive_fs",
         status: "send", 
         label: "📤 Enviar a Osaka", 
         mapImg: "media/Mapas/ruta_dia7.png" 
     },
-    8: { 
-        title: "Torii, Ciervos y Salto a Osaka", 
-        date: "Mié 16 Sept", 
-        plan: ["⛩️ 06:30 - Fushimi Inari", "🦌 Todai-ji y Parque de Nara", "🌌 Noche: Neones en Dotonbori"], 
-        food: [
-            { text: "🦌 Galletas Shika-senbei para ciervos", url: "#" }
-        ], 
-        hotelImg: "media/Hoteles/Osaka.png", 
-        status: "backpack", 
-        label: "🎒 Mochila", 
-        mapImg: "media/Mapas/ruta_dia8.png" 
-    },
-    9: { 
-        title: "Universal Studios Japan", 
-        date: "Jue 17 Sept", 
-        plan: ["🎢 Mañana en USJ (Super Nintendo World 🍄).", "🌇 Tarde en Umeda Sky Building."], 
-        food: [
-            { text: "🍜 Ramen en zona Umeda", url: "#" }
-        ], 
-        hotelImg: "media/Hoteles/Osaka.png", 
-        status: "receive", 
-        label: "📥 Recibir maleta", 
-        mapImg: "media/Mapas/ruta_dia9.png" 
-    },
-    10: { 
-        title: "Castillo de Osaka y Shinsekai", 
-        date: "Vie 18 Sept", 
-        plan: ["🏯 Castillo de Osaka.", "🐟 Mercado Kuromon.", "🏮 Shinsekai."], 
-        food: [
-            { text: "🍢 Kushikatsu en Shinsekai", url: "#" }
-        ], 
-        hotelImg: "media/Hoteles/Osaka.png", 
-        status: "stay", 
-        label: "🧳 En hotel", 
-        mapImg: "media/Mapas/ruta_dia10.png" 
-    },
-    11: { 
+    8: {
         title: "Hacia Okinawa", 
-        date: "Sáb 19 Sept", 
+        date: "Mié 16 Sept", 
         plan: ["⛩️ Templo Shitennoji.", "✈️ Vuelo hacia Okinawa 🏝️."], 
         food: [
             { text: "🍰 Tarta de queso Pablo", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Okinawa.png", 
-        status: "send", 
-        label: "📤 Enviar a Tokio", 
-        mapImg: "media/Mapas/ruta_dia11.png" 
+		hotelUrl: "https://drive.google.com/open?id=1BdRBT0gR6fAbIL12RKYnPDj3bJZYOyK7&usp=drive_fs",
+        status: "backpack", 
+        label: "🎒 Mochila", 
+        mapImg: "media/Mapas/ruta_dia8.png" 
     },
-    12: { 
+    9: {
         title: "Okinawa", 
-        date: "Dom 20 Sept", 
+        date: "Jue 17 Sept", 
         plan: ["Ferry a Tokashiki.", "Playa."], 
         food: [
             { text: "🍜 Okinawa Soba", url: "#" }
         ], 
-        hotelImg: "media/Hoteles/Okinawa.png", 
+        hotelImg: "media/Hoteles/Okinawa.png",
+		hotelUrl: "https://drive.google.com/open?id=1BdRBT0gR6fAbIL12RKYnPDj3bJZYOyK7&usp=drive_fs",
         status: "backpack", 
         label: "🎒 Mochila", 
-        mapImg: "media/Mapas/ruta_dia12.png" 
+        mapImg: "media/Mapas/ruta_dia9.png" 
     },
-    13: { 
+
+    10: { 
         title: "Okinawa", 
-        date: "Lun 21 Sept", 
+        date: "Vie 18 Sept", 
         plan: ["Acuario Churaumi.", "Relajación."], 
         food: [
             { text: "🍦 Blue Seal Ice Cream", url: "#" }
         ], 
-        hotelImg: "media/Hoteles/Okinawa.png", 
+        hotelImg: "media/Hoteles/Okinawa.png",
+		hotelUrl: "https://drive.google.com/open?id=1BdRBT0gR6fAbIL12RKYnPDj3bJZYOyK7&usp=drive_fs",
+        status: "backpack", 
+        label: "🎒 Mochila", 
+        mapImg: "media/Mapas/ruta_dia10.png" 
+    },
+    11: { 
+        title: "Vuelta a Osaka", 
+        date: "Sáb 19 Sept", 
+        plan: ["⛩️ 06:30 - Fushimi Inari", "🦌 Todai-ji y Parque de Nara", "🌌 Noche: Neones en Dotonbori"], 
+        food: [
+            { text: "🦌 Galletas Shika-senbei para ciervos", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Osaka.png",
+		hotelUrl: "https://drive.google.com/open?id=1OgTqD2vow_KFh6kYkfCkV8eMRxHCjShK&usp=drive_fs",
+        status: "receive", 
+        label: "📥 Recibir maleta", 
+        mapImg: "media/Mapas/ruta_dia11.png" 
+    },
+    12: {
+        title: "Castillo de Osaka y Shinsekai", 
+        date: "Dom 20 Sept", 
+        plan: ["🏯 Castillo de Osaka.", "🐟 Mercado Kuromon.", "🏮 Shinsekai."], 
+        food: [
+            { text: "🍢 Kushikatsu en Shinsekai", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Osaka.png", 
+		hotelUrl: "https://drive.google.com/open?id=1OgTqD2vow_KFh6kYkfCkV8eMRxHCjShK&usp=drive_fs",
+        status: "send", 
+        label: "📤 Enviar a Tokio", 
+        mapImg: "media/Mapas/ruta_dia12.png" 
+    },
+
+    13: {
+        title: "Universal Studios Japan", 
+        date: "Lun 21 Sept", 
+        plan: ["🎢 Mañana en USJ (Super Nintendo World 🍄).", "🌇 Tarde en Umeda Sky Building."], 
+        food: [
+            { text: "🍜 Ramen en zona Umeda", url: "#" }
+        ], 
+        hotelImg: "media/Hoteles/Osaka.png", 
+		hotelUrl: "https://drive.google.com/open?id=1OgTqD2vow_KFh6kYkfCkV8eMRxHCjShK&usp=drive_fs",
         status: "backpack", 
         label: "🎒 Mochila", 
         mapImg: "media/Mapas/ruta_dia13.png" 
     },
+
     14: { 
-        title: "Okinawa y vuelta a Tokio", 
+        title: "Osaka y vuelta a Tokio", 
         date: "Mar 22 Sept", 
-        plan: ["Vuelo a Tokio.", "Compras Ginza."], 
+        plan: ["⛩️ 06:30 - Fushimi Inari", "🦌 Todai-ji y Parque de Nara", "🌌 Noche: Vuelta a Tokio"], 
         food: [
-            { text: "🍣 Sushi Premium", url: "#" }
+            { text: "🦌 Galletas Shika-senbei para ciervos", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Tokio.png", 
         status: "receive", 
@@ -440,7 +457,7 @@ const dayDetails = {
         food: [
             { text: "🍱 Bento", url: "#" }
         ], 
-        hotelImg: "media/Hoteles/Tokio.png", 
+        hotelImg: "media/Hoteles/Avion.png", 
         status: "stay", 
         label: "🧳 En hotel", 
         mapImg: "media/Mapas/ruta_dia15.png" 
@@ -493,10 +510,14 @@ function openDay(id) {
         hImg.style.aspectRatio = '1100 / 600';
         hImg.style.objectFit = 'fill';
 
+        // Modificado: Abre el enlace personalizado definido en dayDetails
         hImg.onclick = () => {
-            const fileNameWithExt = data.hotelImg.split('/').pop();
-            const fileName = fileNameWithExt.substring(0, fileNameWithExt.lastIndexOf('.')) + '.pdf';
-            window.open(`hoteles/${fileName}`, '_blank');
+            if (data.hotelUrl) {
+                window.open(data.hotelUrl, '_blank');
+            } else {
+                // Opcional: comportamiento por defecto si algún día no tiene hotelUrl
+                alert("No hay documento o enlace configurado para este hotel.");
+            }
         };
     } else {
         hImg.style.display = 'none';
