@@ -4,6 +4,10 @@
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Japón 2026</title> 
+
+    <!-- Librería CSS de MapLibre GL -->
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+
     <style> 
         :root { 
             --jp-red: #ff4d6d; 
@@ -19,36 +23,50 @@
             background-color: var(--jp-white); 
             color: var(--jp-black); 
             margin: 0; 
-            padding: 20px; 
+            padding: 10px 20px 20px 20px; 
             line-height: 1.6; 
         } 
 
+        /* CABECERA COMPACTA */
         header { 
             text-align: center; 
-            padding-bottom: 20px; 
-            border-bottom: 3px solid var(--jp-red); 
-            margin-bottom: 30px; 
+            padding-bottom: 8px; 
+            border-bottom: 2px solid var(--jp-red); 
+            margin-bottom: 12px; 
         } 
 
-        h1 { margin: 0; font-size: 1.8rem; color: var(--jp-red); letter-spacing: 1px; } 
-        .subtitle { margin: 5px 0; font-weight: 600; opacity: 0.8; color: #aaa; } 
+        h1 { 
+            margin: 0; 
+            font-size: 1.3rem; 
+            color: var(--jp-red); 
+            letter-spacing: 0.5px; 
+        } 
+
+        .subtitle { 
+            margin: 2px 0 0 0; 
+            font-weight: 600; 
+            opacity: 0.8; 
+            color: #aaa; 
+            font-size: 0.82rem; 
+        } 
 
         .tab-container {
             max-width: 700px;
-            margin: 0 auto 20px auto;
+            margin: 0 auto 15px auto;
             display: flex;
             justify-content: center;
             gap: 10px;
         }
 
         .tab-button {
-            padding: 10px 25px;
+            padding: 6px 20px;
             border: none;
             background: #333;
             color: #ccc;
-            border-radius: 25px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 0.85rem;
             transition: all 0.3s ease;
         }
 
@@ -64,6 +82,130 @@
         }
 
         .tab-content.active {
+            display: block;
+        }
+
+        #mapa-tab.tab-content {
+            max-width: 1000px;
+            position: relative;
+        }
+
+        #mapa {
+            height: 72vh;
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid #333;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .leyenda-panel {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(30, 30, 30, 0.95);
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            font-size: 14px;
+            border: 1px solid #333;
+            color: #eee;
+        }
+
+        .leyenda-panel h4 {
+            margin: 0 0 10px 0;
+            font-size: 15px;
+            color: var(--jp-red);
+        }
+
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .leyenda-item:last-child { margin-bottom: 0; }
+        .leyenda-item input { margin-right: 8px; cursor: pointer; }
+
+        .leyenda-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(0,0,0,0.3);
+        }
+
+        .color-templo { background-color: #8e44ad; }
+        .color-atraccion { background-color: #2ecc71; }
+
+        .pin-thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            background-size: cover;
+            background-position: center;
+            background-color: #ccc;
+            box-sizing: border-box;
+            transition: none !important;
+            animation: none !important;
+        }
+
+        .pin-thumb:hover {
+            box-shadow: 0 0 14px 4px rgba(255, 77, 109, 0.8);
+            z-index: 10;
+        }
+
+        .pin-templo { border: 3.5px solid #8e44ad; }
+        .pin-atraccion { border: 3.5px solid #2ecc71; }
+
+        .mi-ubicacion-icon {
+            width: 18px;
+            height: 18px;
+            background-color: #007bff;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,123,255,0.8);
+            transition: none !important;
+        }
+
+        .btn-como-llegar {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #1a73e8;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: background-color 0.2s;
+        }
+
+        .btn-como-llegar:hover { background-color: #1557b0; }
+        .btn-como-llegar svg { width: 18px; height: 18px; fill: white; }
+
+        .imagen-container {
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 350px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .imagen-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: block;
         }
 
@@ -130,6 +272,7 @@
             max-width: 600px; 
             position: relative; 
             border: 1px solid #333;
+            text-align: center;
         } 
 
         .close-modal { 
@@ -137,10 +280,9 @@
             font-size: 32px; font-weight: bold; cursor: pointer; color: #666; 
         }
 
-        .detail-section { margin-top: 25px; } 
+        .detail-section { margin-top: 25px; text-align: left; } 
         .detail-section h3 { border-bottom: 2px solid #333; padding-bottom: 8px; color: var(--jp-red); font-size: 1.1rem; } 
         
-        /* Estilos para los links interesantes */
         .detail-section ul li a {
             color: #ffb3c1;
             text-decoration: none;
@@ -166,30 +308,31 @@
             justify-content:center; 
             background-color: rgba(0,0,0,0.9);
             z-index: 2000;
-		}
-		
-		#hotelImg {
-			width: 100%;
-			aspect-ratio: 1100 / 600; 
-			object-fit: fill; 
-			border-radius: 12px;
-			margin-top: 10px;
-			display: none;
-			cursor: pointer;
-			border: 1px solid #333;
+        }
+        
+        #hotelImg {
+            width: 100%;
+            aspect-ratio: 1100 / 600; 
+            object-fit: fill; 
+            border-radius: 12px;
+            margin-top: 10px;
+            display: none;
+            cursor: pointer;
+            border: 1px solid #333;
         }
     </style> 
 </head> 
 <body> 
 
 <header> 
-    <h1>JAPÓN 2026 🇯🇵</h1> 
+    <h1>JAPÓN 2026</h1> 
     <p class="subtitle">09 Septiembre - 23 Septiembre</p> 
 </header> 
 
 <div class="tab-container">
     <button class="tab-button active" onclick="showTab(event, 'planning')">Planning</button>
     <button class="tab-button" onclick="showTab(event, 'maletas')">Maletas</button>
+    <button class="tab-button" onclick="showTab(event, 'mapa-tab')">Mapa</button>
 </div>
 
 <div id="planning" class="tab-content active"> 
@@ -219,31 +362,60 @@
     </table>
 </div>
 
+<div id="mapa-tab" class="tab-content">
+    <div class="leyenda-panel">
+        <h4>Leyenda / Filtros</h4>
+        <label class="leyenda-item">
+            <input type="checkbox" id="filtro-templo" checked onchange="filtrarMarcadores()">
+            <span class="leyenda-color color-templo"></span> Templos
+        </label>
+        <label class="leyenda-item">
+            <input type="checkbox" id="filtro-atraccion" checked onchange="filtrarMarcadores()">
+            <span class="leyenda-color color-atraccion"></span> Atracciones
+        </label>
+    </div>
+    
+    <div id="mapa"></div>
+</div>
+
 <div id="dayModal" class="modal"> 
     <div class="modal-content"> 
         <span class="close-modal" onclick="closeModal()">×</span> 
         <h2 id="modalTitle" style="color: var(--jp-red); margin-top: 0;">Detalles</h2> 
         
-        <div class="detail-section"> 
-            <h3>📝 Plan detallado</h3> 
-            <ul id="modalPlan"></ul> 
-        </div> 
+        <p id="modalPoiDesc" style="display: none; font-size: 1.05rem;"></p>
 
-        <div class="detail-section"> 
-            <h3>📍 Recorrido del día</h3> 
-            <div class="map-container">
-                <img id="modalMapImg" src="" style="display: none;">
+        <a id="modalBtnLlegar" href="#" target="_blank" class="btn-como-llegar" style="display: none;">
+            <svg viewBox="0 0 24 24">
+                <path d="M21.71 11.29l-9-9c-.39-.39-1.02-.39-1.41 0l-9 9c-.39.39-.39 1.02 0 1.41l9 9c.39.39 1.02.39 1.41 0l9-9c.39-.38.39-1.01 0-1.41zM14 14.5V12h-4v3H8v-4c0-.55.45-1 1-1h5V7.5l3.5 3.5-3.5 3.5z"/>
+            </svg>
+            Cómo llegar
+        </a>
+
+        <div class="imagen-container" id="modalPoiImgContainer" style="display: none;"></div>
+
+        <div id="modalDaySections">
+            <div class="detail-section"> 
+                <h3>📝 Plan detallado</h3> 
+                <ul id="modalPlan"></ul> 
             </div> 
-        </div>
 
-        <div class="detail-section"> 
-            <h3>💡 Links interesantes</h3> 
-            <ul id="modalFood"></ul> 
-        </div> 
+            <div class="detail-section"> 
+                <h3>📍 Recorrido del día</h3> 
+                <div class="map-container">
+                    <img id="modalMapImg" src="" style="display: none;">
+                </div> 
+            </div>
 
-        <div class="detail-section"> 
-            <h3>🏨 Hotel</h3> 
-            <img id="hotelImg" src="">
+            <div class="detail-section"> 
+                <h3>💡 Links interesantes</h3> 
+                <ul id="modalFood"></ul> 
+            </div> 
+
+            <div class="detail-section"> 
+                <h3>🏨 Hotel</h3> 
+                <img id="hotelImg" src="">
+            </div>
         </div>
     </div> 
 </div> 
@@ -253,14 +425,26 @@
     <img id="fullResImage" src="" style="max-width: 95%; max-height: 90vh; border-radius: 8px;">
 </div>
 
+<script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+
 <script> 
+var map = null;
+var marcadoresMaplibre = [];
+
 function showTab(event, tabId) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
     event.currentTarget.classList.add('active');
-}
 
+    if (tabId === 'mapa-tab') {
+        if (!map) {
+            initMap();
+        } else {
+            setTimeout(() => { map.resize(); }, 100);
+        }
+    }
+}
 
 const dayDetails = { 
     1: { 
@@ -272,7 +456,7 @@ const dayDetails = {
             { text: "🎥 Vídeo de llegada y traslado", url: "media/videos/traslado_tokio.mp4" }
         ], 
         hotelImg: "media/Hoteles/Tokio.png", 
-		hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
         status: "stay", 
         label: "🧳 En hotel", 
         mapImg: "media/Mapas/ruta_dia1.png" 
@@ -286,7 +470,7 @@ const dayDetails = {
             { text: "🎥 Vídeo de Shibuya Crossing", url: "media/videos/shibuya.mp4" }
         ], 
         hotelImg: "media/Hoteles/Tokio.png",
-		hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
         status: "stay", 
         label: "🧳 En hotel", 
         mapImg: "media/Mapas/ruta_dia2.png" 
@@ -297,10 +481,10 @@ const dayDetails = {
         plan: ["07:45: Planta baja del banco Mitsui Sumitomo", "Puente Shinkyo.", "Santuario Toshogu.", "Cataratas Kegon.", "Lago Chuzenji.", "18:00 - Shinjuku"], 
         food: [
             { text: "Tiktok: Vídeo del plan", url: "https://www.tiktok.com/@elaineoneday/video/7552214280305741067" },
-			{ text: "Entradas Klook (PDF)", url: "https://drive.google.com/open?id=1JsiWFW7rzdXPkfPWQuC-pfu015ZCgMGg&usp=drive_fs" }
+            { text: "Entradas Klook (PDF)", url: "https://drive.google.com/open?id=1JsiWFW7rzdXPkfPWQuC-pfu015ZCgMGg&usp=drive_fs" }
         ], 
         hotelImg: "media/Hoteles/Tokio.png",
-		hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
         status: "send", 
         label: "📤 Enviar a Kioto", 
         mapImg: "media/Mapas/ruta_dia3.png" 
@@ -313,7 +497,7 @@ const dayDetails = {
             { text: "🍡 Street food en Nakamise", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Tokio.png", 
-		hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1c6elyQSgHAMeuyZu4-OArULZ4wzEVxEt&usp=drive_fs",
         status: "backpack", 
         label: "🎒 Mochila", 
         mapImg: "media/Mapas/ruta_dia4.png" 
@@ -321,12 +505,12 @@ const dayDetails = {
     5: { 
         title: "Llegada a Kioto", 
         date: "Dom 13 Sept", 
-        plan: ["🚄 12:00 - Llegada", "🏮 Paseo por Gion", "🌊 Cena en Pontocho"], 
+        plan: ["🚄 12:00 - Llegada", "Lanterns Gion", "🌊 Cena en Pontocho"], 
         food: [
             { text: "🏮 Restaurantes tradicionales en Pontocho", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Kioto.png",
-		hotelUrl: "https://drive.google.com/open?id=1EO-1iwvYP2ArAdfKUrkZNN0n--XdCpI7&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1EO-1iwvYP2ArAdfKUrkZNN0n--XdCpI7&usp=drive_fs",
         status: "receive", 
         label: "📥 Recibir maleta", 
         mapImg: "media/Mapas/ruta_dia5.png" 
@@ -339,7 +523,7 @@ const dayDetails = {
             { text: "🍱 Unagi o croquetas en Mercado Nishiki", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Kioto.png",
-		hotelUrl: "https://drive.google.com/open?id=1EO-1iwvYP2ArAdfKUrkZNN0n--XdCpI7&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1EO-1iwvYP2ArAdfKUrkZNN0n--XdCpI7&usp=drive_fs",
         status: "stay", 
         label: "🧳 En hotel", 
         mapImg: "media/Mapas/ruta_dia6.png" 
@@ -352,7 +536,7 @@ const dayDetails = {
             { text: "🍵 Yudofu en Arashiyama", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Kioto.png",
-		hotelUrl: "https://drive.google.com/open?id=1EO-1iwvYP2ArAdfKUrkZNN0n--XdCpI7&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1EO-1iwvYP2ArAdfKUrkZNN0n--XdCpI7&usp=drive_fs",
         status: "send", 
         label: "📤 Enviar a Osaka", 
         mapImg: "media/Mapas/ruta_dia7.png" 
@@ -365,7 +549,7 @@ const dayDetails = {
             { text: "🍰 Tarta de queso Pablo", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Okinawa.png", 
-		hotelUrl: "https://drive.google.com/open?id=1BdRBT0gR6fAbIL12RKYnPDj3bJZYOyK7&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1BdRBT0gR6fAbIL12RKYnPDj3bJZYOyK7&usp=drive_fs",
         status: "backpack", 
         label: "🎒 Mochila", 
         mapImg: "media/Mapas/ruta_dia8.png" 
@@ -378,12 +562,11 @@ const dayDetails = {
             { text: "🍜 Okinawa Soba", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Okinawa.png",
-		hotelUrl: "https://drive.google.com/open?id=1BdRBT0gR6fAbIL12RKYnPDj3bJZYOyK7&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1BdRBT0gR6fAbIL12RKYnPDj3bJZYOyK7&usp=drive_fs",
         status: "backpack", 
         label: "🎒 Mochila", 
         mapImg: "media/Mapas/ruta_dia9.png" 
     },
-
     10: { 
         title: "Okinawa", 
         date: "Vie 18 Sept", 
@@ -392,7 +575,7 @@ const dayDetails = {
             { text: "🍦 Blue Seal Ice Cream", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Okinawa.png",
-		hotelUrl: "https://drive.google.com/open?id=1BdRBT0gR6fAbIL12RKYnPDj3bJZYOyK7&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1BdRBT0gR6fAbIL12RKYnPDj3bJZYOyK7&usp=drive_fs",
         status: "backpack", 
         label: "🎒 Mochila", 
         mapImg: "media/Mapas/ruta_dia10.png" 
@@ -405,7 +588,7 @@ const dayDetails = {
             { text: "🦌 Galletas Shika-senbei para ciervos", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Osaka.png",
-		hotelUrl: "https://drive.google.com/open?id=1OgTqD2vow_KFh6kYkfCkV8eMRxHCjShK&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1OgTqD2vow_KFh6kYkfCkV8eMRxHCjShK&usp=drive_fs",
         status: "receive", 
         label: "📥 Recibir maleta", 
         mapImg: "media/Mapas/ruta_dia11.png" 
@@ -413,17 +596,16 @@ const dayDetails = {
     12: {
         title: "Castillo de Osaka y Shinsekai", 
         date: "Dom 20 Sept", 
-        plan: ["🏯 Castillo de Osaka.", "🐟 Mercado Kuromon.", "🏮 Shinsekai."], 
+        plan: ["🏯 Castillo de Osaka.", "🐟 Mercado Kuromon.", "Lanterns Shinsekai."], 
         food: [
             { text: "🍢 Kushikatsu en Shinsekai", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Osaka.png", 
-		hotelUrl: "https://drive.google.com/open?id=1OgTqD2vow_KFh6kYkfCkV8eMRxHCjShK&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1OgTqD2vow_KFh6kYkfCkV8eMRxHCjShK&usp=drive_fs",
         status: "send", 
         label: "📤 Enviar a Tokio", 
         mapImg: "media/Mapas/ruta_dia12.png" 
     },
-
     13: {
         title: "Universal Studios Japan", 
         date: "Lun 21 Sept", 
@@ -432,12 +614,11 @@ const dayDetails = {
             { text: "🍜 Ramen en zona Umeda", url: "#" }
         ], 
         hotelImg: "media/Hoteles/Osaka.png", 
-		hotelUrl: "https://drive.google.com/open?id=1OgTqD2vow_KFh6kYkfCkV8eMRxHCjShK&usp=drive_fs",
+        hotelUrl: "https://drive.google.com/open?id=1OgTqD2vow_KFh6kYkfCkV8eMRxHCjShK&usp=drive_fs",
         status: "backpack", 
         label: "🎒 Mochila", 
         mapImg: "media/Mapas/ruta_dia13.png" 
     },
-
     14: { 
         title: "Osaka y vuelta a Tokio", 
         date: "Mar 22 Sept", 
@@ -464,10 +645,111 @@ const dayDetails = {
     }
 };
 
+const puntosDeInteres = [
+    { titulo: "Tokio - Senso-ji", tipo: "templo", lat: 35.7148, lng: 139.7967, descripcion: "El templo budista más antiguo e importante de Tokio, situado en Asakusa.", imagen: "sensoji.jpg" },
+    { titulo: "Tokio - Santuario Meiji", tipo: "templo", lat: 35.6764, lng: 139.6993, descripcion: "Santuario sintoísta dedicado al emperador Meiji, rodeado por un frondoso bosque urbano.", imagen: "meiji_jingu.jpg" },
+    { titulo: "Tokio - Cruce de Shibuya", tipo: "atraccion", lat: 35.6595, lng: 139.7005, descripcion: "El cruce peatonal más transitado del mundo y corazón neurálgico del moderno Tokio.", imagen: "shibuya.jpg" },
+    { titulo: "Tokio - Tokyo Skytree", tipo: "atraccion", lat: 35.7101, lng: 139.8107, descripcion: "La torre de radiodifusión más alta del mundo con impresionantes miradores.", imagen: "skytree.jpg" },
+    { titulo: "Tokio - Torre de Tokio", tipo: "atraccion", lat: 35.6586, lng: 139.7454, descripcion: "Torre inspirada en la Torre Eiffel y un clásico icono del horizonte tokiota.", imagen: "tokio_tower.jpg" },
+    { titulo: "Tokio - Palacio Imperial", tipo: "atraccion", lat: 35.6852, lng: 139.7528, descripcion: "Residencia oficial de la familia imperial rodeada de fosos y jardines históricos.", imagen: "palacio_imperial.jpg" },
+    { titulo: "Tokio - Akihabara", tipo: "atraccion", lat: 35.6997, lng: 139.7714, descripcion: "El famoso distrito del anime, el manga, los videojuegos y la electrónica.", imagen: "akihabara.jpg" },
+    { titulo: "Tokio - Templo Zojo-ji", tipo: "templo", lat: 35.6574, lng: 139.7482, descripcion: "Templo histórico con vistas directas e impresoras hacia la Torre de Tokio.", imagen: "zojoji.jpg" },
+    { titulo: "Kioto - Fushimi Inari-taisha", tipo: "templo", lat: 34.9671, lng: 135.7727, descripcion: "Famoso santuario dedicado al dios Inari con miles de puertas torii rojas recorriendo el monte.", imagen: "fushimi.jpg" },
+    { titulo: "Kioto - Kinkaku-ji (Pabellón Dorado)", tipo: "templo", lat: 35.0394, lng: 135.7292, descripcion: "Templo zen cuyas dos plantas superiores están totalmente recubiertas de pan de oro.", imagen: "kinkakuji.jpg" },
+    { titulo: "Kioto - Kiyomizu-dera", tipo: "templo", lat: 34.9949, lng: 135.7850, descripcion: "Templo icónico construido sobre una impresionante terraza de madera con vistas panorámicas.", imagen: "kiyomizudera.jpg" },
+    { titulo: "Kioto - Arashiyama (Bosque de Bambú)", tipo: "atraccion", lat: 35.0171, lng: 135.6713, descripcion: "Paseo entre imponentes cañas de bambú gigantes en la zona oeste de Kioto.", imagen: "bambu_arashiyama.jpg" },
+    { titulo: "Kioto - Ginkaku-ji (Pabellón de Plata)", tipo: "templo", lat: 35.0272, lng: 135.7982, descripcion: "Templo zen famoso por sus elegantes jardines de arena seca y musgo.", imagen: "ginkakuji.jpg" },
+    { titulo: "Kioto - Castillo Nijo", tipo: "atraccion", lat: 35.0142, lng: 135.7482, descripcion: "Antigua residencia de los shogunes Tokugawa con los famosos suelos 'ruiseñor'.", imagen: "castillo_nijo.jpg" },
+    { titulo: "Kioto - Barrio de Gion", tipo: "atraccion", lat: 35.0037, lng: 135.7772, descripcion: "El histórico barrio de las geishas con casas tradicionales de madera (machiya).", imagen: "gion.jpg" },
+    { titulo: "Osaka - Castillo de Osaka", tipo: "atraccion", lat: 34.6873, lng: 135.5262, descripcion: "Uno de los castillos más afamados del país, rodeado por un gran parque y fosos.", imagen: "castillo_osaka.jpg" },
+    { titulo: "Osaka - Dotonbori", tipo: "atraccion", lat: 34.6687, lng: 135.5013, descripcion: "Emblemática calle junto al canal, famosa por sus deslumbrantes neones y ambiente.", imagen: "dotonbori.jpg" },
+    { titulo: "Osaka - Shitenno-ji", tipo: "templo", lat: 34.6545, lng: 135.5165, descripcion: "Uno de los templos budistas más antiguos del país, fundado en el año 593 por el Príncipe Shotoku.", imagen: "shintennoji.jpg" },
+    { titulo: "Osaka - Umeda Sky Building", tipo: "atraccion", lat: 34.7053, lng: 135.4896, descripcion: "Rascacielos futurista con un observatorio al aire libre que conecta sus dos torres.", imagen: "umeda_sky.jpg" },
+    { titulo: "Osaka - Shinsekai & Torre Tsutenkaku", tipo: "atraccion", lat: 34.6525, lng: 135.5063, descripcion: "Barrio retro nostálgico del siglo XX presidido por la icónica torre Tsutenkaku.", imagen: "shinsekai.jpg" },
+    { titulo: "Osaka - Santuario Sumiyoshi Taisha", tipo: "templo", lat: 34.6127, lng: 135.4925, descripcion: "Uno de los santuarios sintoístas más antiguos de Japón, con su célebre puente rojo en arco.", imagen: "sumiyoshi_taisha.jpg" }
+];
+
+function initMap() {
+    map = new maplibregl.Map({
+        container: 'mapa',
+        style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+        center: [136.88, 35.20],
+        zoom: 6.5
+    });
+
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
+
+    map.on('style.load', function () {
+        var layers = map.getStyle().layers;
+        for (var i = 0; i < layers.length; i++) {
+            if (layers[i].type === 'symbol' && layers[i].layout && layers[i].layout['text-field']) {
+                map.setLayoutProperty(layers[i].id, 'text-field', [
+                    'coalesce',
+                    ['get', 'name:es'],
+                    ['get', 'name:en'],
+                    ['get', 'name:latin'],
+                    ['get', 'name']
+                ]);
+            }
+        }
+    });
+
+    puntosDeInteres.forEach(function(punto) {
+        var el = document.createElement('div');
+        var claseTipo = 'pin-' + (punto.tipo || 'atraccion');
+        el.className = 'pin-thumb ' + claseTipo;
+        el.style.backgroundImage = `url('./mapa/${punto.imagen}')`;
+
+        el.addEventListener('click', function() {
+            openPoiModal(punto);
+        });
+
+        var marker = new maplibregl.Marker({ element: el, anchor: 'center' })
+            .setLngLat([punto.lng, punto.lat])
+            .addTo(map);
+
+        marcadoresMaplibre.push({ instancia: marker, tipo: punto.tipo });
+    });
+
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                var elUbi = document.createElement('div');
+                elUbi.className = 'mi-ubicacion-icon';
+                var popup = new maplibregl.Popup({ offset: 25 }).setHTML("<b>Estás aquí</b>");
+                new maplibregl.Marker({ element: elUbi, anchor: 'center' })
+                    .setLngLat([position.coords.longitude, position.coords.latitude])
+                    .setPopup(popup)
+                    .addTo(map);
+            },
+            function(error) { console.warn("No se pudo obtener la ubicación."); },
+            { enableHighAccuracy: true }
+        );
+    }
+}
+
+function filtrarMarcadores() {
+    var mostrarTemplos = document.getElementById('filtro-templo').checked;
+    var mostrarAtracciones = document.getElementById('filtro-atraccion').checked;
+
+    marcadoresMaplibre.forEach(function(item) {
+        if (item.tipo === 'templo') {
+            item.instancia.getElement().style.display = mostrarTemplos ? 'block' : 'none';
+        } else if (item.tipo === 'atraccion') {
+            item.instancia.getElement().style.display = mostrarAtracciones ? 'block' : 'none';
+        }
+    });
+}
+
 function openDay(id) { 
     const data = dayDetails[id]; 
     if (!data) return; 
     
+    document.getElementById('modalPoiDesc').style.display = 'none';
+    document.getElementById('modalBtnLlegar').style.display = 'none';
+    document.getElementById('modalPoiImgContainer').style.display = 'none';
+    document.getElementById('modalDaySections').style.display = 'block';
+
     document.getElementById('modalTitle').innerText = data.title; 
 
     const planUl = document.getElementById('modalPlan'); 
@@ -487,7 +769,6 @@ function openDay(id) {
         mapImg.style.display = 'none';
     }
 
-    // Lógica modificada para iterar sobre el array de links y crear elementos <a> clicables
     const foodUl = document.getElementById('modalFood');
     foodUl.innerHTML = '';
     if (data.food && Array.isArray(data.food)) {
@@ -496,7 +777,7 @@ function openDay(id) {
             let a = document.createElement('a');
             a.href = item.url;
             a.innerText = item.text;
-            a.target = "_blank"; // Se abre en una pestaña nueva
+            a.target = "_blank";
             li.appendChild(a);
             foodUl.appendChild(li);
         });
@@ -510,18 +791,36 @@ function openDay(id) {
         hImg.style.aspectRatio = '1100 / 600';
         hImg.style.objectFit = 'fill';
 
-        // Modificado: Abre el enlace personalizado definido en dayDetails
         hImg.onclick = () => {
             if (data.hotelUrl) {
                 window.open(data.hotelUrl, '_blank');
             } else {
-                // Opcional: comportamiento por defecto si algún día no tiene hotelUrl
                 alert("No hay documento o enlace configurado para este hotel.");
             }
         };
     } else {
         hImg.style.display = 'none';
     }
+
+    document.getElementById('dayModal').style.display = "block";
+}
+
+function openPoiModal(punto) {
+    document.getElementById('modalDaySections').style.display = 'none';
+
+    document.getElementById('modalTitle').innerText = punto.titulo;
+    
+    var descElem = document.getElementById('modalPoiDesc');
+    descElem.innerText = punto.descripcion;
+    descElem.style.display = 'block';
+
+    var btnLlegar = document.getElementById('modalBtnLlegar');
+    btnLlegar.href = `https://www.google.com/maps/dir/?api=1&destination=${punto.lat},${punto.lng}`;
+    btnLlegar.style.display = 'inline-flex';
+
+    var imgContainer = document.getElementById('modalPoiImgContainer');
+    imgContainer.innerHTML = `<img src="./mapa/${punto.imagen}" alt="${punto.titulo}">`;
+    imgContainer.style.display = 'block';
 
     document.getElementById('dayModal').style.display = "block";
 }
