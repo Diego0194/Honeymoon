@@ -955,7 +955,8 @@ const puntosDeInteres = [
         lng: 135.5113, 
         descripcion: "El sándwich estilo japonés más viral de Osaka. Destacan por su enorme tamaño lleno de ingredientes.", 
         platoEstrella: "Sándwich gigante (recomiendan pedir medio sándwich, 1/2, porque es enorme) 🥪",
-        imagen: "dekasan.jpg"
+        imagen: "dekasan.jpg",
+		videoId: "7655420294932303126"
     },
     { 
         titulo: "Kioto - Emifukutei (笑福亭)", 
@@ -974,7 +975,8 @@ const puntosDeInteres = [
         lng: 139.7650, 
         descripcion: "Especialistas en sándwiches fritos (Age-pan) crujientes rellenos de nata, cremas o ingredientes salados.", 
         platoEstrella: "Sándwich de pan frito relleno 🥪🔥",
-        imagen: "age3.jpg"
+        imagen: "age3.jpg",
+		videoId: "7667309078074445078"
     },
     { 
         titulo: "Osaka - Wagyu Burger / Restaurant", 
@@ -983,7 +985,8 @@ const puntosDeInteres = [
         lng: 135.5005, 
         descripcion: "Restaurante de carnes y hamburguesas gourmet elaboradas con auténtico filete de ternera Wagyu envejecido.", 
         platoEstrella: "Hamburguesa de Wagyu envejecido (2.000 ¥ - 3.000 ¥) 🍔🥩",
-        imagen: "wagyu_burger.jpg"
+        imagen: "wagyu_burger.png",
+		videoId: "7668707887606189333"
     },
     { 
         titulo: "Tokio - Asakusa Gyukatsu", 
@@ -992,7 +995,8 @@ const puntosDeInteres = [
         lng: 139.7972, 
         descripcion: "El local más icónico para probar el Gyukatsu (filete de ternera empanado al estilo tonkatsu) justo frente a la puerta Kaminarimon.", 
         platoEstrella: "Menú Gyukatsu con piedra caliente para terminar la carne a tu gusto 🥩🔥 (~7.000 ¥ para 2 personas)",
-        imagen: "asakusa_gyukatsu.jpg"
+        imagen: "asakusa_gyukatsu.png",
+		videoId: "7662830227340430614"
     },
     { 
         titulo: "Kioto - amam dacotan kyoto", 
@@ -1001,7 +1005,8 @@ const puntosDeInteres = [
         lng: 135.7645, 
         descripcion: "Panadería artesanal de diseño espectacular en Nakagyo Ward. Famosa por sus deliciosos bocadillos salados y repostería recién horneada.", 
         platoEstrella: "Bocadillos artesanales y repostería creativa 🥐🥪",
-        imagen: "amam_dacotan.jpg"
+        imagen: "amam_dacotan.jpg",
+		videoId: "7671333041825975570"
     },
     { 
         titulo: "Osaka - Toichi Pancake Kitahorie", 
@@ -1010,7 +1015,8 @@ const puntosDeInteres = [
         lng: 135.4948, 
         descripcion: "Cafetería famosa por servir uno de los pancakes soufflé más esponjosos y suaves de Osaka. Aceptan reservas.", 
         platoEstrella: "Brûlée Pancake con capa caramelizada crujiente (¥1,300) 🥞🔥",
-        imagen: "toichi_pancake.jpg"
+        imagen: "toichi_pancake.jpg",
+		videoId: "7663084338690510087"
     },
     { 
         titulo: "Osaka - Crepe & Espresso & 9-chome", 
@@ -1235,8 +1241,13 @@ function openPoiModal(punto) {
 }
 
 function closeModal() { 
+    // Limpiamos el contenido del modal (destruye el iframe de TikTok si existe)
+    document.getElementById('modalPoiDesc').innerHTML = '';
+    document.getElementById('modalPoiDesc').style.display = "none";
+    
+    // Ocultamos la ventana modal
     document.getElementById('dayModal').style.display = "none"; 
-} 
+}
 
 function openViewer(src) {
     document.getElementById('fullResImage').src = src;
