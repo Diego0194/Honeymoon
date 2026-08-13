@@ -142,6 +142,7 @@
 
         .color-templo { background-color: #8e44ad; }
         .color-atraccion { background-color: #2ecc71; }
+        .color-hotel { background-color: #f1c40f; }
 
         .pin-thumb {
             width: 60px;
@@ -164,6 +165,27 @@
 
         .pin-templo { border: 3.5px solid #8e44ad; }
         .pin-atraccion { border: 3.5px solid #2ecc71; }
+
+        /* Estilo para los pines de Hotel con Emoji */
+        .pin-hotel {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #2a2a2a;
+            border: 2.5px solid #f1c40f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        .pin-hotel:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 10px #f1c40f;
+            z-index: 10;
+        }
 
         .mi-ubicacion-icon {
             width: 18px;
@@ -293,6 +315,21 @@
             text-decoration: underline;
         }
 
+        .poi-info-block {
+            text-align: left;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .poi-info-block p {
+            margin: 8px 0;
+        }
+
+        .poi-info-block strong {
+            color: var(--jp-red);
+        }
+
         .map-container img {
             width: 100%;
             border-radius: 12px;
@@ -367,11 +404,15 @@
         <h4>Leyenda / Filtros</h4>
         <label class="leyenda-item">
             <input type="checkbox" id="filtro-templo" checked onchange="filtrarMarcadores()">
-            <span class="leyenda-color color-templo"></span> Templos
+            <span class="leyenda-color color-templo"></span> Monumentos / Templos
         </label>
         <label class="leyenda-item">
             <input type="checkbox" id="filtro-atraccion" checked onchange="filtrarMarcadores()">
             <span class="leyenda-color color-atraccion"></span> Atracciones
+        </label>
+        <label class="leyenda-item">
+            <input type="checkbox" id="filtro-hotel" checked onchange="filtrarMarcadores()">
+            <span class="leyenda-color color-hotel"></span> Hoteles
         </label>
     </div>
     
@@ -383,7 +424,7 @@
         <span class="close-modal" onclick="closeModal()">×</span> 
         <h2 id="modalTitle" style="color: var(--jp-red); margin-top: 0;">Detalles</h2> 
         
-        <p id="modalPoiDesc" style="display: none; font-size: 1.05rem;"></p>
+        <div id="modalPoiDesc" style="display: none;"></div>
 
         <a id="modalBtnLlegar" href="#" target="_blank" class="btn-como-llegar" style="display: none;">
             <svg viewBox="0 0 24 24">
@@ -646,27 +687,187 @@ const dayDetails = {
 };
 
 const puntosDeInteres = [
-    { titulo: "Tokio - Senso-ji", tipo: "templo", lat: 35.7148, lng: 139.7967, descripcion: "El templo budista más antiguo e importante de Tokio, situado en Asakusa.", imagen: "sensoji.jpg" },
-    { titulo: "Tokio - Santuario Meiji", tipo: "templo", lat: 35.6764, lng: 139.6993, descripcion: "Santuario sintoísta dedicado al emperador Meiji, rodeado por un frondoso bosque urbano.", imagen: "meiji_jingu.jpg" },
+    { 
+        titulo: "Tokio - Hotel Gracery Shinjuku", 
+        tipo: "hotel", 
+        lat: 35.6953, 
+        lng: 139.7020, 
+        descripcion: "Hotel de alojamiento en Tokio (Shinjuku), famoso por la cabeza gigante de Godzilla en su terraza." 
+    },
+    { 
+        titulo: "Kioto - Super Hotel Kyoto Shijokawaramachi", 
+        tipo: "hotel", 
+        lat: 35.0041, 
+        lng: 135.7686, 
+        descripcion: "Hotel de alojamiento céntrico en Kioto, ubicado en la zona comercial de Shijo-Kawaramachi." 
+    },
+    { 
+        titulo: "Okinawa - Anse Yomitan Toya", 
+        tipo: "hotel", 
+        lat: 26.3957, 
+        lng: 127.7346, 
+        descripcion: "Hotel de alojamiento costero en Yomitan, Okinawa." 
+    },
+    { 
+        titulo: "Osaka - 東方レジデンス (Oriental Residence)", 
+        tipo: "hotel", 
+        lat: 34.6655, 
+        lng: 135.5072, 
+        descripcion: "新建大人気黒門市場徒歩3分 道頓堀難波心斎橋徒步7分 日本橋駅徒歩5分東方レジデンス. Alojamiento céntrico cerca del Mercado Kuromon y Dotonbori." 
+    },
+    { 
+        titulo: "Tokio - Senso-ji", 
+        tipo: "templo", 
+        lat: 35.7148, 
+        lng: 139.7967, 
+        descripcion: "El templo budista más antiguo e importante de Tokio, situado en Asakusa.", 
+        anio: "645 d.C.",
+        dedicado: "Bodhisattva Kannon (Diosa de la Misericordia)",
+        historia: "Fundado tras el hallazgo milagroso de una estatua dorada de Kannon por dos hermanos pescadores en el río Sumida. Aunque la estructura ha sufrido destrucciones y reconstrucciones (la última tras los bombardeos de la Segunda Guerra Mundial), sigue siendo el corazón espiritual de Asakusa.",
+        curiosidad: "La estatua original de Kannon hallada en el 628 d.C. sigue enterrada bajo el piso principal del templo; nadie tiene permitido verla jamás, ni siquiera el sacerdote principal.",
+        imagen: "sensoji.jpg" 
+    },
+    { 
+        titulo: "Tokio - Santuario Meiji", 
+        tipo: "templo", 
+        lat: 35.6764, 
+        lng: 139.6993, 
+        descripcion: "Santuario sintoísta dedicado al emperador Meiji, rodeado por un frondoso bosque urbano.", 
+        anio: "1920",
+        dedicado: "Emperador Meiji y la Emperatriz Shōken",
+        historia: "Construido para honrar las almas del primer emperador del Japón moderno y su esposa. El enorme bosque de 70 hectáreas que lo rodea no es natural: fue plantado a mano con más de 100.000 árboles donados por ciudadanos de todo el país.",
+        curiosidad: "A la entrada verás enormes barriles de sake (kazari-daru) y también barriles de vino francés de Borgoña, donados debido al gran amor que el Emperador Meiji tenía por la cultura occidental.",
+        imagen: "meiji_jingu.jpg" 
+    },
     { titulo: "Tokio - Cruce de Shibuya", tipo: "atraccion", lat: 35.6595, lng: 139.7005, descripcion: "El cruce peatonal más transitado del mundo y corazón neurálgico del moderno Tokio.", imagen: "shibuya.jpg" },
     { titulo: "Tokio - Tokyo Skytree", tipo: "atraccion", lat: 35.7101, lng: 139.8107, descripcion: "La torre de radiodifusión más alta del mundo con impresionantes miradores.", imagen: "skytree.jpg" },
     { titulo: "Tokio - Torre de Tokio", tipo: "atraccion", lat: 35.6586, lng: 139.7454, descripcion: "Torre inspirada en la Torre Eiffel y un clásico icono del horizonte tokiota.", imagen: "tokio_tower.jpg" },
-    { titulo: "Tokio - Palacio Imperial", tipo: "atraccion", lat: 35.6852, lng: 139.7528, descripcion: "Residencia oficial de la familia imperial rodeada de fosos y jardines históricos.", imagen: "palacio_imperial.jpg" },
+    { 
+        titulo: "Tokio - Palacio Imperial", 
+        tipo: "templo", 
+        lat: 35.6852, 
+        lng: 139.7528, 
+        descripcion: "Residencia oficial de la familia imperial rodeada de fosos y jardines históricos.", 
+        anio: "1457 (Castillo Edo) / 1888 (Palacio Imperial)",
+        dedicado: "Residencia Oficial del Emperador de Japón",
+        historia: "Se erige sobre el antiguo Castillo Edo, que fue la sede del shogunato Tokugawa durante más de 250 años. Cuando la capital cambió de Kioto a Tokio durante la Restauración Meiji en 1868, el lugar se convirtió en la residencia definitiva de la Casa Imperial.",
+        curiosidad: "Durante el punto álgido de la burbuja inmobiliaria japonesa a finales de los años 80, el valor de los terrenos del Palacio Imperial se estimaba superior al de todo el suelo del estado de California.",
+        imagen: "palacio_imperial.jpg" 
+    },
     { titulo: "Tokio - Akihabara", tipo: "atraccion", lat: 35.6997, lng: 139.7714, descripcion: "El famoso distrito del anime, el manga, los videojuegos y la electrónica.", imagen: "akihabara.jpg" },
-    { titulo: "Tokio - Templo Zojo-ji", tipo: "templo", lat: 35.6574, lng: 139.7482, descripcion: "Templo histórico con vistas directas e impresoras hacia la Torre de Tokio.", imagen: "zojoji.jpg" },
-    { titulo: "Kioto - Fushimi Inari-taisha", tipo: "templo", lat: 34.9671, lng: 135.7727, descripcion: "Famoso santuario dedicado al dios Inari con miles de puertas torii rojas recorriendo el monte.", imagen: "fushimi.jpg" },
-    { titulo: "Kioto - Kinkaku-ji (Pabellón Dorado)", tipo: "templo", lat: 35.0394, lng: 135.7292, descripcion: "Templo zen cuyas dos plantas superiores están totalmente recubiertas de pan de oro.", imagen: "kinkakuji.jpg" },
-    { titulo: "Kioto - Kiyomizu-dera", tipo: "templo", lat: 34.9949, lng: 135.7850, descripcion: "Templo icónico construido sobre una impresionante terraza de madera con vistas panorámicas.", imagen: "kiyomizudera.jpg" },
+    { 
+        titulo: "Tokio - Templo Zojo-ji", 
+        tipo: "templo", 
+        lat: 35.6574, 
+        lng: 139.7482, 
+        descripcion: "Templo histórico con vistas directas e impresionantes hacia la Torre de Tokio.", 
+        anio: "1393 (trasladado a su sitio actual en 1598)",
+        dedicado: "Buda Amida",
+        historia: "Se convirtió en el templo familiar del poderoso clan shogunat Tokugawa. Seis de los quince shogunes Tokugawa están enterrados en sus jardines traseros.",
+        curiosidad: "Alberga una de las colecciones más conmovedoras de estatuas de Unborn Children (Jizō), vistiendo gorritos rojos y molinillos de viento decorativos.",
+        imagen: "zojoji.jpg" 
+    },
+    { 
+        titulo: "Kioto - Fushimi Inari-taisha", 
+        tipo: "templo", 
+        lat: 34.9671, 
+        lng: 135.7727, 
+        descripcion: "Famoso santuario dedicado al dios Inari con miles de puertas torii rojas recorriendo el monte.", 
+        anio: "711 d.C.",
+        dedicado: "Inari Okami (Dios del arroz, la agricultura y el éxito empresarial)",
+        historia: "Es el santuario principal de los más de 30.000 dedicados a Inari en Japón. Las miles de puertas vermellón (torii) fueron donadas por comerciantes y empresas a lo largo de los siglos como agradecimiento por la prosperidad.",
+        curiosidad: "Encontrarás cientos de estatuas de zorros (kitsune), que son los mensajeros del dios Inari. Muchos llevan llaves de graneros o joyas en la boca.",
+        imagen: "fushimi.jpg" 
+    },
+    { 
+        titulo: "Kioto - Kinkaku-ji (Pabellón Dorado)", 
+        tipo: "templo", 
+        lat: 35.0394, 
+        lng: 135.7292, 
+        descripcion: "Templo zen cuyas dos plantas superiores están totalmente recubiertas de pan de oro.", 
+        anio: "1397",
+        dedicado: "Buda Gautama (alberga reliquias de Buda)",
+        historia: "Originalmente una villa de descanso del shōgun Ashikaga Yoshimitsu, se convirtió en templo zen tras su muerte. El templo sobrevivió a múltiples guerras pero fue incendiado en 1950 por un monje novicio obsesionado con él, acontecimiento que inspiró la novela de Yukio Mishima.",
+        curiosidad: "El estanque de agua 'Kyōko-chi' refleja perfectamente el templo dorado y contiene piedras estratégicamente colocadas que representan islas míticas del budismo.",
+        imagen: "kinkakuji.jpg" 
+    },
+    { 
+        titulo: "Kioto - Kiyomizu-dera", 
+        tipo: "templo", 
+        lat: 34.9949, 
+        lng: 135.7850, 
+        descripcion: "Templo icónico construido sobre una impresionante terraza de madera con vistas panorámicas.", 
+        anio: "778 d.C.",
+        dedicado: "Kannon de once caras",
+        historia: "Construido en el monte Otowa, debe su nombre ('Templo del Agua Pura') a las cascadas naturales que fluyen en su interior. Es célebre por su escenario elevado de madera sostenido por enormes pilares de madera de ciprés.",
+        curiosidad: "Toda la estructura de la gran terraza se construyó completamente sin utilizar un solo clavo de metal. En el período Edo, existía el dicho de 'saltar de la terraza de Kiyomizu' (equivalente a 'dar el gran salto'); quien sobrevivía al salto de 13 metros creía que se le concedería un deseo.",
+        imagen: "kiyomizudera.jpg" 
+    },
     { titulo: "Kioto - Arashiyama (Bosque de Bambú)", tipo: "atraccion", lat: 35.0171, lng: 135.6713, descripcion: "Paseo entre imponentes cañas de bambú gigantes en la zona oeste de Kioto.", imagen: "bambu_arashiyama.jpg" },
-    { titulo: "Kioto - Ginkaku-ji (Pabellón de Plata)", tipo: "templo", lat: 35.0272, lng: 135.7982, descripcion: "Templo zen famoso por sus elegantes jardines de arena seca y musgo.", imagen: "ginkakuji.jpg" },
-    { titulo: "Kioto - Castillo Nijo", tipo: "atraccion", lat: 35.0142, lng: 135.7482, descripcion: "Antigua residencia de los shogunes Tokugawa con los famosos suelos 'ruiseñor'.", imagen: "castillo_nijo.jpg" },
+    { 
+        titulo: "Kioto - Ginkaku-ji (Pabellón de Plata)", 
+        tipo: "templo", 
+        lat: 35.0272, 
+        lng: 135.7982, 
+        descripcion: "Templo zen famoso por sus elegantes jardines de arena seca y musgo.", 
+        anio: "1482",
+        dedicado: "Buda Amida",
+        historia: "Construido por el shōgun Ashikaga Yoshimasa imitando el Kinkaku-ji de su abuelo. La intención original era cubrirlo de láminas de plata, pero debido a la devastadora Guerra Onin nunca se aplicó, conservando su sobrio acabado en madera natural.",
+        curiosidad: "Su jardín posee un cono cónico perfecto de arena blanca llamado 'Kōgetsu-dai' (Plataforma para ver la luna), diseñado para reflejar la luz lunar directamente sobre el templo.",
+        imagen: "ginkakuji.jpg" 
+    },
+    { 
+        titulo: "Kioto - Castillo Nijo", 
+        tipo: "templo", 
+        lat: 35.0142, 
+        lng: 135.7482, 
+        descripcion: "Antigua residencia de los shogunes Tokugawa con los famosos suelos 'ruiseñor'.", 
+        anio: "1603",
+        dedicado: "Residencia defensiva del Shōgun Tokugawa en Kioto",
+        historia: "Construido por el legendario Tokugawa Ieyasu para demostrar su supremo poder ante la corte imperial instalada en la misma ciudad. Aquí tuvo lugar en 1867 la renuncia oficial del último shōgun, devolviendo el control político al Emperador.",
+        curiosidad: "Sus pasillos cuentan con el famoso 'suelo de ruiseñor' (Uguisubari): las maderas chirrían imitando el canto de las aves al ser pisadas, diseñado como un ingenioso sistema de alarma antirrobos y ninjas.",
+        imagen: "castillo_nijo.jpg" 
+    },
     { titulo: "Kioto - Barrio de Gion", tipo: "atraccion", lat: 35.0037, lng: 135.7772, descripcion: "El histórico barrio de las geishas con casas tradicionales de madera (machiya).", imagen: "gion.jpg" },
-    { titulo: "Osaka - Castillo de Osaka", tipo: "atraccion", lat: 34.6873, lng: 135.5262, descripcion: "Uno de los castillos más afamados del país, rodeado por un gran parque y fosos.", imagen: "castillo_osaka.jpg" },
+    { 
+        titulo: "Osaka - Castillo de Osaka", 
+        tipo: "templo", 
+        lat: 34.6873, 
+        lng: 135.5262, 
+        descripcion: "Uno de los castillos más afamados del país, rodeado por un gran parque y fosos.", 
+        anio: "1583",
+        dedicado: "Fortaleza del unificador Toyotomi Hideyoshi",
+        historia: "Fue construido por Toyotomi Hideyoshi como el bastión central de un Japón unificado. El castillo sufrió múltiples destrucciones debido a cercos militares e incendios por rayos, siendo su torre principal reconstruida en hormigón armado en 1931.",
+        curiosidad: "Los muros defensivos de piedra contienen rocas gigantescas como la 'Tako-ishi' (Piedra Pulpo), con un peso estimado superior a las 108 toneladas, movida sin maquinaria moderna.",
+        imagen: "castillo_osaka.jpg" 
+    },
     { titulo: "Osaka - Dotonbori", tipo: "atraccion", lat: 34.6687, lng: 135.5013, descripcion: "Emblemática calle junto al canal, famosa por sus deslumbrantes neones y ambiente.", imagen: "dotonbori.jpg" },
-    { titulo: "Osaka - Shitenno-ji", tipo: "templo", lat: 34.6545, lng: 135.5165, descripcion: "Uno de los templos budistas más antiguos del país, fundado en el año 593 por el Príncipe Shotoku.", imagen: "shintennoji.jpg" },
+    { 
+        titulo: "Osaka - Shitenno-ji", 
+        tipo: "templo", 
+        lat: 34.6545, 
+        lng: 135.5165, 
+        descripcion: "Uno de los templos budistas más antiguos del país, fundado en el año 593 por el Príncipe Shotoku.", 
+        anio: "593 d.C.",
+        dedicado: "Los Cuatro Reyes Celestiales (Shitenno)",
+        historia: "Es considerado el templo financiado oficialmente por el Estado más antiguo de Japón. Fue construido por el príncipe Shōtoku para introducir y afianzar el budismo en el país. Aunque sus estructuras han sido reconstruidas fielmente tras guerras e incendios, mantiene el trazado simétrico continental original Asuka.",
+        curiosidad: "El estanque interior del templo alberga cientos de tortugas de agua dulce tomando el sol, convirtiéndolo en un símbolo característico de longevidad del templo.",
+        imagen: "shintennoji.jpg" 
+    },
     { titulo: "Osaka - Umeda Sky Building", tipo: "atraccion", lat: 34.7053, lng: 135.4896, descripcion: "Rascacielos futurista con un observatorio al aire libre que conecta sus dos torres.", imagen: "umeda_sky.jpg" },
     { titulo: "Osaka - Shinsekai & Torre Tsutenkaku", tipo: "atraccion", lat: 34.6525, lng: 135.5063, descripcion: "Barrio retro nostálgico del siglo XX presidido por la icónica torre Tsutenkaku.", imagen: "shinsekai.jpg" },
-    { titulo: "Osaka - Santuario Sumiyoshi Taisha", tipo: "templo", lat: 34.6127, lng: 135.4925, descripcion: "Uno de los santuarios sintoístas más antiguos de Japón, con su célebre puente rojo en arco.", imagen: "sumiyoshi_taisha.jpg" }
+    { 
+        titulo: "Osaka - Santuario Sumiyoshi Taisha", 
+        tipo: "templo", 
+        lat: 34.6127, 
+        lng: 135.4925, 
+        descripcion: "Uno de los santuarios sintoístas más antiguos de Japón, con su célebre puente rojo en arco.", 
+        anio: "211 d.C.",
+        dedicado: "Sumiyoshi Sanjin (Dioses del mar y la navegación)",
+        historia: "Es el santuario principal de todos los santuarios Sumiyoshi de Japón. Su estilo arquitectónico puro (Sumiyoshi-zukuri) es anterior a la llegada de la influencia arquitectónica budista de China, caracterizándose por techos rectos y fachadas rojas/blancas.",
+        curiosidad: "Su famoso puente arqueado rojo Sorihashi (o Puente Taiko) tiene una inclinación de casi 44 grados para imitar un arcoíris que conecta la tierra con los dioses.",
+        imagen: "sumiyoshi_taisha.jpg" 
+    }
 ];
 
 function initMap() {
@@ -696,9 +897,17 @@ function initMap() {
 
     puntosDeInteres.forEach(function(punto) {
         var el = document.createElement('div');
-        var claseTipo = 'pin-' + (punto.tipo || 'atraccion');
-        el.className = 'pin-thumb ' + claseTipo;
-        el.style.backgroundImage = `url('./mapa/${punto.imagen}')`;
+        
+        if (punto.tipo === 'hotel') {
+            el.className = 'pin-hotel';
+            el.innerText = '🏨';
+        } else {
+            var claseTipo = 'pin-' + (punto.tipo || 'atraccion');
+            el.className = 'pin-thumb ' + claseTipo;
+            if (punto.imagen) {
+                el.style.backgroundImage = `url('./mapa/${punto.imagen}')`;
+            }
+        }
 
         el.addEventListener('click', function() {
             openPoiModal(punto);
@@ -731,12 +940,15 @@ function initMap() {
 function filtrarMarcadores() {
     var mostrarTemplos = document.getElementById('filtro-templo').checked;
     var mostrarAtracciones = document.getElementById('filtro-atraccion').checked;
+    var mostrarHoteles = document.getElementById('filtro-hotel').checked;
 
     marcadoresMaplibre.forEach(function(item) {
         if (item.tipo === 'templo') {
             item.instancia.getElement().style.display = mostrarTemplos ? 'block' : 'none';
         } else if (item.tipo === 'atraccion') {
             item.instancia.getElement().style.display = mostrarAtracciones ? 'block' : 'none';
+        } else if (item.tipo === 'hotel') {
+            item.instancia.getElement().style.display = mostrarHoteles ? 'block' : 'none';
         }
     });
 }
@@ -811,7 +1023,19 @@ function openPoiModal(punto) {
     document.getElementById('modalTitle').innerText = punto.titulo;
     
     var descElem = document.getElementById('modalPoiDesc');
-    descElem.innerText = punto.descripcion;
+    
+    let htmlContent = `<p style="font-size: 1.05rem;">${punto.descripcion}</p>`;
+    
+    if (punto.tipo === 'templo') {
+        htmlContent += `<div class="poi-info-block">`;
+        if (punto.anio) htmlContent += `<p><strong>Año de construcción:</strong> ${punto.anio}</p>`;
+        if (punto.dedicado) htmlContent += `<p><strong>Dedicado a / Uso:</strong> ${punto.dedicado}</p>`;
+        if (punto.historia) htmlContent += `<p><strong>Historia:</strong> ${punto.historia}</p>`;
+        if (punto.curiosidad) htmlContent += `<p><strong>Curiosidad:</strong> ${punto.curiosidad}</p>`;
+        htmlContent += `</div>`;
+    }
+
+    descElem.innerHTML = htmlContent;
     descElem.style.display = 'block';
 
     var btnLlegar = document.getElementById('modalBtnLlegar');
@@ -819,8 +1043,13 @@ function openPoiModal(punto) {
     btnLlegar.style.display = 'inline-flex';
 
     var imgContainer = document.getElementById('modalPoiImgContainer');
-    imgContainer.innerHTML = `<img src="./mapa/${punto.imagen}" alt="${punto.titulo}">`;
-    imgContainer.style.display = 'block';
+    if (punto.imagen) {
+        imgContainer.innerHTML = `<img src="./mapa/${punto.imagen}" alt="${punto.titulo}">`;
+        imgContainer.style.display = 'block';
+    } else {
+        imgContainer.innerHTML = '';
+        imgContainer.style.display = 'none';
+    }
 
     document.getElementById('dayModal').style.display = "block";
 }
