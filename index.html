@@ -142,7 +142,8 @@
 
         .color-templo { background-color: #8e44ad; }
         .color-atraccion { background-color: #2ecc71; }
-        .color-hotel { background-color: #f1c40f; }
+        .color-hotel { background-color: #007bff; }
+        .color-restaurante { background-color: #e67e22; }
 
         .pin-thumb {
             width: 60px;
@@ -166,26 +167,74 @@
         .pin-templo { border: 3.5px solid #8e44ad; }
         .pin-atraccion { border: 3.5px solid #2ecc71; }
 
-        /* Estilo para los pines de Hotel con Emoji */
+        .pin-restaurante {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+            background-color: #2a2a2a;
+            border: 2.5px solid #e67e22;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            box-sizing: border-box;
+            transition: none !important;
+        }
+
+        .pin-restaurante:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px #e67e22;
+            z-index: 10;
+        }
+
+        /* --- ESTRUCTURA DEFINITIVA PARA PINES DE HOTEL --- */
+        
+        /* 1. Contenedor base controlado por MapLibre */
         .pin-hotel {
             width: 32px;
             height: 32px;
+            cursor: pointer;
+            display: block;
+            /* IMPORTANTE: NINGÚN transition o transform aquí, MapLibre lo necesita limpio */
+        }
+
+        /* 2. Círculo visual (borde y fondo) */
+        .pin-hotel-inner {
+            position: relative; /* Base para el centrado absoluto del span */
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
-            background-color: #2a2a2a;
-            border: 2.5px solid #f1c40f;
+            background-color: #4A4A4A;
+            border: 2.5px solid #007bff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            box-sizing: border-box;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* 3. Centrado matemático del emoji forzado por CSS puro */
+        .pin-hotel-inner span {
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            font-size: 15px; /* Ajustado al marco */
+            line-height: 1 !important; /* Mata la herencia de texto desalineado */
+            padding: 0;
+            margin: 0;
         }
 
-        .pin-hotel:hover {
+        /* 4. Efecto Hover aplicado SOLO a la capa visual interior */
+        .pin-hotel:hover .pin-hotel-inner {
             transform: scale(1.15);
-            box-shadow: 0 0 10px #f1c40f;
+            box-shadow: 0 0 12px #007bff;
             z-index: 10;
         }
+
+        /* ------------------------------------------------ */
 
         .mi-ubicacion-icon {
             width: 18px;
@@ -229,6 +278,16 @@
             height: 100%;
             object-fit: cover;
             display: block;
+        }
+
+        /* Estilo contenedor del reproductor TikTok */
+        .tiktok-embed-container {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 12px;
         }
 
         .day-card { 
@@ -413,6 +472,10 @@
         <label class="leyenda-item">
             <input type="checkbox" id="filtro-hotel" checked onchange="filtrarMarcadores()">
             <span class="leyenda-color color-hotel"></span> Hoteles
+        </label>
+        <label class="leyenda-item">
+            <input type="checkbox" id="filtro-restaurante" checked onchange="filtrarMarcadores()">
+            <span class="leyenda-color color-restaurante"></span> Restaurantes
         </label>
     </div>
     
@@ -687,6 +750,7 @@ const dayDetails = {
 };
 
 const puntosDeInteres = [
+    // --- HOTELES ---
     { 
         titulo: "Tokio - Hotel Gracery Shinjuku", 
         tipo: "hotel", 
@@ -715,6 +779,8 @@ const puntosDeInteres = [
         lng: 135.5072, 
         descripcion: "新建大人気黒門市場徒歩3分 道頓堀難波心斎橋徒步7分 日本橋駅徒歩5分東方レジデンス. Alojamiento céntrico cerca del Mercado Kuromon y Dotonbori." 
     },
+
+    // --- MONUMENTOS Y TEMPLOS ---
     { 
         titulo: "Tokio - Senso-ji", 
         tipo: "templo", 
@@ -739,9 +805,6 @@ const puntosDeInteres = [
         curiosidad: "A la entrada verás enormes barriles de sake (kazari-daru) y también barriles de vino francés de Borgoña, donados debido al gran amor que el Emperador Meiji tenía por la cultura occidental.",
         imagen: "meiji_jingu.jpg" 
     },
-    { titulo: "Tokio - Cruce de Shibuya", tipo: "atraccion", lat: 35.6595, lng: 139.7005, descripcion: "El cruce peatonal más transitado del mundo y corazón neurálgico del moderno Tokio.", imagen: "shibuya.jpg" },
-    { titulo: "Tokio - Tokyo Skytree", tipo: "atraccion", lat: 35.7101, lng: 139.8107, descripcion: "La torre de radiodifusión más alta del mundo con impresionantes miradores.", imagen: "skytree.jpg" },
-    { titulo: "Tokio - Torre de Tokio", tipo: "atraccion", lat: 35.6586, lng: 139.7454, descripcion: "Torre inspirada en la Torre Eiffel y un clásico icono del horizonte tokiota.", imagen: "tokio_tower.jpg" },
     { 
         titulo: "Tokio - Palacio Imperial", 
         tipo: "templo", 
@@ -754,7 +817,6 @@ const puntosDeInteres = [
         curiosidad: "Durante el punto álgido de la burbuja inmobiliaria japonesa a finales de los años 80, el valor de los terrenos del Palacio Imperial se estimaba superior al de todo el suelo del estado de California.",
         imagen: "palacio_imperial.jpg" 
     },
-    { titulo: "Tokio - Akihabara", tipo: "atraccion", lat: 35.6997, lng: 139.7714, descripcion: "El famoso distrito del anime, el manga, los videojuegos y la electrónica.", imagen: "akihabara.jpg" },
     { 
         titulo: "Tokio - Templo Zojo-ji", 
         tipo: "templo", 
@@ -803,7 +865,6 @@ const puntosDeInteres = [
         curiosidad: "Toda la estructura de la gran terraza se construyó completamente sin utilizar un solo clavo de metal. En el período Edo, existía el dicho de 'saltar de la terraza de Kiyomizu' (equivalente a 'dar el gran salto'); quien sobrevivía al salto de 13 metros creía que se le concedería un deseo.",
         imagen: "kiyomizudera.jpg" 
     },
-    { titulo: "Kioto - Arashiyama (Bosque de Bambú)", tipo: "atraccion", lat: 35.0171, lng: 135.6713, descripcion: "Paseo entre imponentes cañas de bambú gigantes en la zona oeste de Kioto.", imagen: "bambu_arashiyama.jpg" },
     { 
         titulo: "Kioto - Ginkaku-ji (Pabellón de Plata)", 
         tipo: "templo", 
@@ -828,7 +889,6 @@ const puntosDeInteres = [
         curiosidad: "Sus pasillos cuentan con el famoso 'suelo de ruiseñor' (Uguisubari): las maderas chirrían imitando el canto de las aves al ser pisadas, diseñado como un ingenioso sistema de alarma antirrobos y ninjas.",
         imagen: "castillo_nijo.jpg" 
     },
-    { titulo: "Kioto - Barrio de Gion", tipo: "atraccion", lat: 35.0037, lng: 135.7772, descripcion: "El histórico barrio de las geishas con casas tradicionales de madera (machiya).", imagen: "gion.jpg" },
     { 
         titulo: "Osaka - Castillo de Osaka", 
         tipo: "templo", 
@@ -841,7 +901,6 @@ const puntosDeInteres = [
         curiosidad: "Los muros defensivos de piedra contienen rocas gigantescas como la 'Tako-ishi' (Piedra Pulpo), con un peso estimado superior a las 108 toneladas, movida sin maquinaria moderna.",
         imagen: "castillo_osaka.jpg" 
     },
-    { titulo: "Osaka - Dotonbori", tipo: "atraccion", lat: 34.6687, lng: 135.5013, descripcion: "Emblemática calle junto al canal, famosa por sus deslumbrantes neones y ambiente.", imagen: "dotonbori.jpg" },
     { 
         titulo: "Osaka - Shitenno-ji", 
         tipo: "templo", 
@@ -850,12 +909,10 @@ const puntosDeInteres = [
         descripcion: "Uno de los templos budistas más antiguos del país, fundado en el año 593 por el Príncipe Shotoku.", 
         anio: "593 d.C.",
         dedicado: "Los Cuatro Reyes Celestiales (Shitenno)",
-        historia: "Es considerado el templo financiado oficialmente por el Estado más antiguo de Japón. Fue construido por el príncipe Shōtoku para introducir y afianzar el budismo en el país. Aunque sus estructuras han sido reconstruidas fielmente tras guerras e incendios, mantiene el trazado simétrico continental original Asuka.",
+        historia: "Es considerado el templo financiado officially por el Estado más antiguo de Japón. Fue construido por el príncipe Shōtoku para introducir y afianzar el budismo en el país. Aunque sus estructuras han sido reconstruidas fielmente tras guerras e incendios, mantiene el trazado simétrico continental original Asuka.",
         curiosidad: "El estanque interior del templo alberga cientos de tortugas de agua dulce tomando el sol, convirtiéndolo en un símbolo característico de longevidad del templo.",
         imagen: "shintennoji.jpg" 
     },
-    { titulo: "Osaka - Umeda Sky Building", tipo: "atraccion", lat: 34.7053, lng: 135.4896, descripcion: "Rascacielos futurista con un observatorio al aire libre que conecta sus dos torres.", imagen: "umeda_sky.jpg" },
-    { titulo: "Osaka - Shinsekai & Torre Tsutenkaku", tipo: "atraccion", lat: 34.6525, lng: 135.5063, descripcion: "Barrio retro nostálgico del siglo XX presidido por la icónica torre Tsutenkaku.", imagen: "shinsekai.jpg" },
     { 
         titulo: "Osaka - Santuario Sumiyoshi Taisha", 
         tipo: "templo", 
@@ -867,6 +924,103 @@ const puntosDeInteres = [
         historia: "Es el santuario principal de todos los santuarios Sumiyoshi de Japón. Su estilo arquitectónico puro (Sumiyoshi-zukuri) es anterior a la llegada de la influencia arquitectónica budista de China, caracterizándose por techos rectos y fachadas rojas/blancas.",
         curiosidad: "Su famoso puente arqueado rojo Sorihashi (o Puente Taiko) tiene una inclinación de casi 44 grados para imitar un arcoíris que conecta la tierra con los dioses.",
         imagen: "sumiyoshi_taisha.jpg" 
+    },
+
+    // --- ATRACCIONES ---
+    { titulo: "Tokio - Cruce de Shibuya", tipo: "atraccion", lat: 35.6595, lng: 139.7005, descripcion: "El cruce peatonal más transitado del mundo y corazón neurálgico del moderno Tokio.", imagen: "shibuya.jpg" },
+    { titulo: "Tokio - Tokyo Skytree", tipo: "atraccion", lat: 35.7101, lng: 139.8107, descripcion: "La torre de radiodifusión más alta del mundo con impresionantes miradores.", imagen: "skytree.jpg" },
+    { titulo: "Tokio - Torre de Tokio", tipo: "atraccion", lat: 35.6586, lng: 139.7454, descripcion: "Torre inspirada en la Torre Eiffel y un clásico icono del horizonte tokiota.", imagen: "tokio_tower.jpg" },
+    { titulo: "Tokio - Akihabara", tipo: "atraccion", lat: 35.6997, lng: 139.7714, descripcion: "El famoso distrito del anime, el manga, los videojuegos y la electrónica.", imagen: "akihabara.jpg" },
+    { titulo: "Kioto - Arashiyama (Bosque de Bambú)", tipo: "atraccion", lat: 35.0171, lng: 135.6713, descripcion: "Paseo entre imponentes cañas de bambú gigantes en la zona oeste de Kioto.", imagen: "bambu_arashiyama.jpg" },
+    { titulo: "Kioto - Barrio de Gion", tipo: "atraccion", lat: 35.0037, lng: 135.7772, descripcion: "El histórico barrio de las geishas con casas tradicionales de madera (machiya).", imagen: "gion.jpg" },
+    { titulo: "Osaka - Dotonbori", tipo: "atraccion", lat: 34.6687, lng: 135.5013, descripcion: "Emblemática calle junto al canal, famosa por sus deslumbrantes neones y ambiente.", imagen: "dotonbori.jpg" },
+    { titulo: "Osaka - Umeda Sky Building", tipo: "atraccion", lat: 34.7053, lng: 135.4896, descripcion: "Rascacielos futurista con un observatorio al aire libre que conecta sus dos torres.", imagen: "umeda_sky.jpg" },
+    { titulo: "Osaka - Shinsekai & Torre Tsutenkaku", tipo: "atraccion", lat: 34.6525, lng: 135.5063, descripcion: "Barrio retro nostálgico del siglo XX presidido por la icónica torre Tsutenkaku.", imagen: "shinsekai.jpg" },
+
+    // --- RESTAURANTES Y CAFETERÍAS (TIKTOK) ---
+    { 
+        titulo: "Tokio - Benitsuru (Asakusa)", 
+        tipo: "restaurante", 
+        lat: 35.7142, 
+        lng: 139.7925, 
+        descripcion: "Famosos pancakes soufflé esponjosos como una nube en Asakusa. Muy populares (favoritos de Justin y Hailey Bieber). Es recomendable ir temprano (aprox. 5:00 AM) para conseguir turno.", 
+        platoEstrella: "Pancakes soufflé dulces y salados (pancakes con huevo frito/queso) 🥞🍳",
+        imagen: "benitsuru.jpg",
+		videoId: "7664671684913319200"
+    },
+    { 
+        titulo: "Osaka - Dekasan", 
+        tipo: "restaurante", 
+        lat: 34.6726, 
+        lng: 135.5113, 
+        descripcion: "El sándwich estilo japonés más viral de Osaka. Destacan por su enorme tamaño lleno de ingredientes.", 
+        platoEstrella: "Sándwich gigante (recomiendan pedir medio sándwich, 1/2, porque es enorme) 🥪",
+        imagen: "dekasan.jpg"
+    },
+    { 
+        titulo: "Kioto - Emifukutei (笑福亭)", 
+        tipo: "restaurante", 
+        lat: 35.0342, 
+        lng: 135.7198, 
+        descripcion: "Restaurante tradicional con ambiente acogedor y familiar muy cerca del Templo Ryōan-ji en Kioto.", 
+        platoEstrella: "Platos tradicionales de fideos Ramen y Udon 🍜",
+        imagen: "emifukutei.png",
+        videoId: "7664671684913319200"
+    },
+    { 
+        titulo: "Tokio - Age 3 (Ginza / Harajuku)", 
+        tipo: "restaurante", 
+        lat: 35.6710, 
+        lng: 139.7650, 
+        descripcion: "Especialistas en sándwiches fritos (Age-pan) crujientes rellenos de nata, cremas o ingredientes salados.", 
+        platoEstrella: "Sándwich de pan frito relleno 🥪🔥",
+        imagen: "age3.jpg"
+    },
+    { 
+        titulo: "Osaka - Wagyu Burger / Restaurant", 
+        tipo: "restaurante", 
+        lat: 34.6680, 
+        lng: 135.5005, 
+        descripcion: "Restaurante de carnes y hamburguesas gourmet elaboradas con auténtico filete de ternera Wagyu envejecido.", 
+        platoEstrella: "Hamburguesa de Wagyu envejecido (2.000 ¥ - 3.000 ¥) 🍔🥩",
+        imagen: "wagyu_burger.jpg"
+    },
+    { 
+        titulo: "Tokio - Asakusa Gyukatsu", 
+        tipo: "restaurante", 
+        lat: 35.7118, 
+        lng: 139.7972, 
+        descripcion: "El local más icónico para probar el Gyukatsu (filete de ternera empanado al estilo tonkatsu) justo frente a la puerta Kaminarimon.", 
+        platoEstrella: "Menú Gyukatsu con piedra caliente para terminar la carne a tu gusto 🥩🔥 (~7.000 ¥ para 2 personas)",
+        imagen: "asakusa_gyukatsu.jpg"
+    },
+    { 
+        titulo: "Kioto - amam dacotan kyoto", 
+        tipo: "restaurante", 
+        lat: 35.0058, 
+        lng: 135.7645, 
+        descripcion: "Panadería artesanal de diseño espectacular en Nakagyo Ward. Famosa por sus deliciosos bocadillos salados y repostería recién horneada.", 
+        platoEstrella: "Bocadillos artesanales y repostería creativa 🥐🥪",
+        imagen: "amam_dacotan.jpg"
+    },
+    { 
+        titulo: "Osaka - Toichi Pancake Kitahorie", 
+        tipo: "restaurante", 
+        lat: 34.6738, 
+        lng: 135.4948, 
+        descripcion: "Cafetería famosa por servir uno de los pancakes soufflé más esponjosos y suaves de Osaka. Aceptan reservas.", 
+        platoEstrella: "Brûlée Pancake con capa caramelizada crujiente (¥1,300) 🥞🔥",
+        imagen: "toichi_pancake.jpg"
+    },
+    { 
+        titulo: "Osaka - Crepe & Espresso & 9-chome", 
+        tipo: "restaurante", 
+        lat: 34.6644, 
+        lng: 135.5173, 
+        descripcion: "Crepería famosa por sus crepas crujientes rellenas de fresas y chocolate. No aceptan reservas y algunos productos son de cantidad limitada.", 
+        platoEstrella: "Bonchi Strawberry Crepe (¥1,600) 🍓🍫",
+        imagen: "crepe_espresso.jpg",
+		videoId: "7671987626957671687"
     }
 ];
 
@@ -900,7 +1054,13 @@ function initMap() {
         
         if (punto.tipo === 'hotel') {
             el.className = 'pin-hotel';
-            el.innerText = '🏨';
+            // IMPORTANTE: Capa interna (círculo) y el span (centrado) insertados vía JS
+            el.innerHTML = '<div class="pin-hotel-inner"><span>🏨</span></div>';
+        } else if (punto.tipo === 'restaurante') {
+            el.className = 'pin-restaurante';
+            if (punto.imagen) {
+                el.style.backgroundImage = `url('./mapa/${punto.imagen}')`;
+            }
         } else {
             var claseTipo = 'pin-' + (punto.tipo || 'atraccion');
             el.className = 'pin-thumb ' + claseTipo;
@@ -941,6 +1101,7 @@ function filtrarMarcadores() {
     var mostrarTemplos = document.getElementById('filtro-templo').checked;
     var mostrarAtracciones = document.getElementById('filtro-atraccion').checked;
     var mostrarHoteles = document.getElementById('filtro-hotel').checked;
+    var mostrarRestaurantes = document.getElementById('filtro-restaurante').checked;
 
     marcadoresMaplibre.forEach(function(item) {
         if (item.tipo === 'templo') {
@@ -949,6 +1110,8 @@ function filtrarMarcadores() {
             item.instancia.getElement().style.display = mostrarAtracciones ? 'block' : 'none';
         } else if (item.tipo === 'hotel') {
             item.instancia.getElement().style.display = mostrarHoteles ? 'block' : 'none';
+        } else if (item.tipo === 'restaurante') {
+            item.instancia.getElement().style.display = mostrarRestaurantes ? 'block' : 'none';
         }
     });
 }
@@ -1019,19 +1182,36 @@ function openDay(id) {
 
 function openPoiModal(punto) {
     document.getElementById('modalDaySections').style.display = 'none';
-
     document.getElementById('modalTitle').innerText = punto.titulo;
     
     var descElem = document.getElementById('modalPoiDesc');
-    
     let htmlContent = `<p style="font-size: 1.05rem;">${punto.descripcion}</p>`;
     
+    // Si es Monumento o Templo
     if (punto.tipo === 'templo') {
         htmlContent += `<div class="poi-info-block">`;
         if (punto.anio) htmlContent += `<p><strong>Año de construcción:</strong> ${punto.anio}</p>`;
         if (punto.dedicado) htmlContent += `<p><strong>Dedicado a / Uso:</strong> ${punto.dedicado}</p>`;
         if (punto.historia) htmlContent += `<p><strong>Historia:</strong> ${punto.historia}</p>`;
         if (punto.curiosidad) htmlContent += `<p><strong>Curiosidad:</strong> ${punto.curiosidad}</p>`;
+        htmlContent += `</div>`;
+    }
+
+    // Si es Restaurante
+    if (punto.tipo === 'restaurante') {
+        htmlContent += `<div class="poi-info-block">`;
+        if (punto.platoEstrella) htmlContent += `<p><strong>Plato estrella:</strong> ${punto.platoEstrella}</p>`;
+        
+        // REPRODUCTOR DIRECTO DE TIKTOK
+        if (punto.videoId) {
+            htmlContent += `
+            <div class="tiktok-embed-container" style="margin-top:15px; display:flex; justify-content:center;">
+                <iframe src="https://www.tiktok.com/player/v1/${punto.videoId}?autoplay=0" 
+                        style="width: 100%; max-width: 325px; height: 560px; border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" 
+                        allow="fullscreen; accelerometer; gyroscope; picture-in-picture">
+                </iframe>
+            </div>`;
+        }
         htmlContent += `</div>`;
     }
 
