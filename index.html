@@ -144,6 +144,7 @@
         .color-atraccion { background-color: #2ecc71; }
         .color-hotel { background-color: #007bff; }
         .color-restaurante { background-color: #e67e22; }
+        .color-pokelid { background-color: #ff007f; }
 
         .pin-thumb {
             width: 60px;
@@ -166,6 +167,7 @@
 
         .pin-templo { border: 3.5px solid #8e44ad; }
         .pin-atraccion { border: 3.5px solid #2ecc71; }
+        .pin-pokelid { border: 3.5px solid #ff007f; width: 50px; height: 50px; }
 
         .pin-restaurante {
             width: 45px;
@@ -189,18 +191,15 @@
 
         /* --- ESTRUCTURA DEFINITIVA PARA PINES DE HOTEL --- */
         
-        /* 1. Contenedor base controlado por MapLibre */
         .pin-hotel {
             width: 32px;
             height: 32px;
             cursor: pointer;
             display: block;
-            /* IMPORTANTE: NINGÚN transition o transform aquí, MapLibre lo necesita limpio */
         }
 
-        /* 2. Círculo visual (borde y fondo) */
         .pin-hotel-inner {
-            position: relative; /* Base para el centrado absoluto del span */
+            position: relative;
             width: 100%;
             height: 100%;
             border-radius: 50%;
@@ -211,7 +210,6 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        /* 3. Centrado matemático del emoji forzado por CSS puro */
         .pin-hotel-inner span {
             position: absolute;
             top: 0; 
@@ -221,20 +219,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px; /* Ajustado al marco */
-            line-height: 1 !important; /* Mata la herencia de texto desalineado */
+            font-size: 15px;
+            line-height: 1 !important;
             padding: 0;
             margin: 0;
         }
 
-        /* 4. Efecto Hover aplicado SOLO a la capa visual interior */
         .pin-hotel:hover .pin-hotel-inner {
             transform: scale(1.15);
             box-shadow: 0 0 12px #007bff;
             z-index: 10;
         }
-
-        /* ------------------------------------------------ */
 
         .mi-ubicacion-icon {
             width: 18px;
@@ -265,22 +260,22 @@
         .btn-como-llegar:hover { background-color: #1557b0; }
         .btn-como-llegar svg { width: 18px; height: 18px; fill: white; }
 
-        .imagen-container {
-            margin-top: 15px;
-            border-radius: 8px;
-            overflow: hidden;
-            max-height: 350px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
+		.imagen-container {
+			margin-top: 15px;
+			border-radius: 8px;
+			overflow: hidden;
+			max-height: none; /* Se elimina el límite rígido para evitar el recorte */
+			box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+		}
 
-        .imagen-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+		.imagen-container img {
+			width: 100%;
+			height: auto;
+			max-height: 65vh; /* Se limita según el alto de la pantalla */
+			object-fit: contain;
+			display: block;
+		}
 
-        /* Estilo contenedor del reproductor TikTok */
         .tiktok-embed-container {
             margin-top: 15px;
             display: flex;
@@ -416,6 +411,20 @@
             cursor: pointer;
             border: 1px solid #333;
         }
+
+        .pokelid-coords {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        .pokelid-coords a {
+            color: #ff007f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .pokelid-coords a:hover {
+            text-decoration: underline;
+        }
     </style> 
 </head> 
 <body> 
@@ -476,6 +485,10 @@
         <label class="leyenda-item">
             <input type="checkbox" id="filtro-restaurante" checked onchange="filtrarMarcadores()">
             <span class="leyenda-color color-restaurante"></span> Restaurantes
+        </label>
+        <label class="leyenda-item">
+            <input type="checkbox" id="filtro-pokelid" checked onchange="filtrarMarcadores()">
+            <span class="leyenda-color color-pokelid"></span> Pokelids
         </label>
     </div>
     
@@ -750,34 +763,102 @@ const dayDetails = {
 };
 
 const puntosDeInteres = [
-// --- HOTELES ---
+    // --- POKELIDS ---
+    {
+        titulo: "Pokelid - Wynaut (Tokyo)",
+        tipo: "pokelid",
+        lat: 35.716810,
+        lng: 139.776399,
+        imagen: "pokelids/Tokyo_Wynaut.png"
+    },
+    {
+        titulo: "Pokelid - Bronzor (Tokyo)",
+        tipo: "pokelid",
+        lat: 35.717715,
+        lng: 139.775397,
+        imagen: "pokelids/Tokio_Bronzor.png"
+    },
+    {
+        titulo: "Pokelid - Totodile (Kyoto)",
+        tipo: "pokelid",
+        lat: 34.987804,
+        lng: 135.743538,
+        imagen: "pokelids/Osaka_Magnemite.png"
+    },
+    {
+        titulo: "Pokelid - Pichu (Kyoto)",
+        tipo: "pokelid",
+        lat: 35.00337,
+        lng: 135.780573,
+        imagen: "pokelids/Kyoto_Pichu.png"
+    },
+    {
+        titulo: "Pokelid - Cyndaquil (Kyoto)",
+        tipo: "pokelid",
+        lat: 35.014858,
+        lng: 135.782013,
+        imagen: "pokelids/Kyoto_Cyndaquil.png"
+    },
+    {
+        titulo: "Pokelid - Chicorita (Kyoto)",
+        tipo: "pokelid",
+        lat: 34.994784,
+        lng: 135.714323,
+        imagen: "pokelids/Kyoto_Chicorita.png"
+    },
+    {
+        titulo: "Pokelid - Ho-Oh (Kyoto)",
+        tipo: "pokelid",
+        lat: 35.011863,
+        lng: 135.678745,
+        imagen: "pokelids/Kyoto_HoOh.png"
+    },
+    {
+        titulo: "Pokelid - Growlithe (Okinawa)",
+        tipo: "pokelid",
+        lat: 26.315733,
+        lng: 127.753613,
+        imagen: "pokelids/Okinawa_Growlithe.png"
+    },
+    {
+        titulo: "Pokelid - Tauros (Okinawa)",
+        tipo: "pokelid",
+        lat: 26.436181,
+        lng: 127.826113,
+        imagen: "pokelids/Okinawa_Tauros.png"
+    },
+    // --- HOTELES ---
     { 
         titulo: "Tokio - Hotel Gracery Shinjuku", 
         tipo: "hotel", 
         lat: 35.6953331, 
         lng: 139.7020117, 
-        descripcion: "Hotel de alojamiento en Tokio (Shinjuku), famoso por la cabeza gigante de Godzilla en su terraza." 
+        descripcion: "Hotel de alojamiento en Tokio (Shinjuku), famoso por la cabeza gigante de Godzilla en su terraza.",
+        horario: "Recepción 24 horas. Check-in a partir de las 15:00 / Check-out hasta las 11:00."
     },
     { 
         titulo: "Kioto - Super Hotel Kyoto Shijokawaramachi", 
         tipo: "hotel", 
         lat: 35.0040713, 
         lng: 135.7686318, 
-        descripcion: "Hotel de alojamiento céntrico en Kioto, ubicado en la zona comercial de Shijo-Kawaramachi." 
+        descripcion: "Hotel de alojamiento céntrico en Kioto, ubicado en la zona comercial de Shijo-Kawaramachi.",
+        horario: "Recepción 24 horas. Check-in a partir de las 15:00 / Check-out hasta las 10:00."
     },
     { 
         titulo: "Okinawa - Anse Yomitan Toya", 
         tipo: "hotel", 
         lat: 26.3957211, 
         lng: 127.7346124, 
-        descripcion: "Hotel de alojamiento costero en Yomitan, Okinawa." 
+        descripcion: "Hotel de alojamiento costero en Yomitan, Okinawa.",
+        horario: "Recepción disponible según reservas. Check-in a partir de las 15:00 / Check-out hasta las 10:00."
     },
     { 
         titulo: "Osaka - 東方レジデンス (Oriental Residence)", 
         tipo: "hotel", 
         lat: 34.6655124, 
         lng: 135.5072183, 
-        descripcion: "新建大人気黒門市場徒歩3分 道頓堀難波心斎橋徒步7分 日本橋駅徒歩5分東方レジデンス. Alojamiento céntrico cerca del Mercado Kuromon y Dotonbori." 
+        descripcion: "新建大人気黒門市場徒歩3分 道頓堀難波心斎橋徒步7分 日本橋駅徒歩5分東方レジデンス. Alojamiento céntrico cerca del Mercado Kuromon y Dotonbori.",
+        horario: "Atención al huésped 24 horas. Check-in a partir de las 15:00 / Check-out hasta las 10:00."
     },
 
     // --- MONUMENTOS Y TEMPLOS ---
@@ -791,6 +872,7 @@ const puntosDeInteres = [
         dedicado: "Bodhisattva Kannon (Diosa de la Misericordia)",
         historia: "Fundado tras el hallazgo milagroso de una estatua dorada de Kannon por dos hermanos pescadores en el río Sumida. Aunque la estructura ha sufrido destrucciones y reconstrucciones (la última tras los bombardeos de la Segunda Guerra Mundial), sigue siendo el corazón espiritual de Asakusa.",
         curiosidad: "La estatua original de Kannon hallada en el 628 d.C. sigue enterrada bajo el piso principal del templo; nadie tiene permitido verla jamás, ni siquiera el sacerdote principal.",
+        horario: "Recinto exterior libre 24 horas. Salón Principal (Main Hall): 06:00 - 17:00 (de Octubre a Marzo abre a las 06:30).",
         imagen: "sensoji.jpg" 
     },
     { 
@@ -803,6 +885,7 @@ const puntosDeInteres = [
         dedicado: "Emperador Meiji y la Emperatriz Shōken",
         historia: "Construido para honrar las almas del primer emperador del Japón moderno y su esposa. El enorme bosque de 70 hectáreas que lo rodea no es natural: fue plantado a mano con más de 100.000 árboles donados por ciudadanos de todo el país.",
         curiosidad: "A la entrada verás enormes barriles de sake (kazari-daru) y también barriles de vino francés de Borgoña, donados debido al gran amor que el Emperador Meiji tenía por la cultura occidental.",
+        horario: "Abre con el amanecer y cierra con la puesta del sol (en Septiembre aprox. 05:20 - 17:50).",
         imagen: "meiji_jingu.jpg" 
     },
     { 
@@ -815,6 +898,7 @@ const puntosDeInteres = [
         dedicado: "Residencia Oficial del Emperador de Japón",
         historia: "Se erige sobre el antiguo Castillo Edo, que fue la sede del shogunato Tokugawa durante más de 250 años. Cuando la capital cambió de Kioto a Tokio durante la Restauración Meiji en 1868, el lugar se convirtió en la residencia definitiva de la Casa Imperial.",
         curiosidad: "Durante el punto álgido de la burbuja inmobiliaria japonesa a finales de los años 80, el valor de los terrenos del Palacio Imperial se estimaba superior al de todo el suelo del estado de California.",
+        horario: "Jardines del Este (East Gardens): 09:00 - 17:00 (última entrada a las 16:30). Cierra los lunes y viernes.",
         imagen: "palacio_imperial.jpg" 
     },
     { 
@@ -827,6 +911,7 @@ const puntosDeInteres = [
         dedicado: "Buda Amida",
         historia: "Se convirtió en el templo familiar del poderoso clan shogunat Tokugawa. Seis de los quince shogunes Tokugawa están enterrados en sus jardines traseros.",
         curiosidad: "Alberga una de las colecciones más conmovedoras de estatuas de Unborn Children (Jizō), vistiendo gorritos rojos y molinillos de viento decorativos.",
+        horario: "Terrenos del templo: 06:00 - 17:30. Edificio principal y museo: 09:00 - 17:00.",
         imagen: "zojoji.jpg" 
     },
     { 
@@ -839,6 +924,7 @@ const puntosDeInteres = [
         dedicado: "Inari Okami (Dios del arroz, la agricultura y el éxito empresarial)",
         historia: "Es el santuario principal de los más de 30.000 dedicados a Inari en Japón. Las miles de puertas vermellón (torii) fueron donadas por comerciantes y empresas a lo largo de los siglos como agradecimiento por la prosperidad.",
         curiosidad: "Encontrarás cientos de estatuas de zorros (kitsune), que son los mensajeros del dios Inari. Muchos llevan llaves de graneros o joyas en la boca.",
+        horario: "Abierto 24 horas (entrada libre y gratuita todo el año).",
         imagen: "fushimi.jpg" 
     },
     { 
@@ -851,6 +937,7 @@ const puntosDeInteres = [
         dedicado: "Buda Gautama (alberga reliquias de Buda)",
         historia: "Originalmente una villa de descanso del shōgun Ashikaga Yoshimitsu, se convirtió en templo zen tras su muerte. El templo sobrevivió a múltiples guerras pero fue incendiado en 1950 por un monje novicio obsesionado con él, acontecimiento que inspiró la novela de Yukio Mishima.",
         curiosidad: "El estanque de agua 'Kyōko-chi' refleja perfectamente el templo dorado y contiene piedras estratégicamente colocadas que representan islas míticas del budismo.",
+        horario: "Todos los días de 09:00 a 17:00.",
         imagen: "kinkakuji.jpg" 
     },
     { 
@@ -863,6 +950,7 @@ const puntosDeInteres = [
         dedicado: "Kannon de once caras",
         historia: "Construido en el monte Otowa, debe su nombre ('Templo del Agua Pura') a las cascadas naturales que fluyen en su interior. Es célebre por su escenario elevado de madera sostenido por enormes pilares de madera de ciprés.",
         curiosidad: "Toda la estructura de la gran terraza se construyó completamente sin utilizar un solo clavo de metal. En el período Edo, existía el dicho de 'saltar de la terraza de Kiyomizu' (equivalente a 'dar el gran salto'); quien sobrevivía al salto de 13 metros creía que se le concedería un deseo.",
+        horario: "Todos los días de 06:00 a 18:00 (se extiende a las 18:30 en verano y fines de semana de otoño).",
         imagen: "kiyomizudera.jpg" 
     },
     { 
@@ -875,6 +963,7 @@ const puntosDeInteres = [
         dedicado: "Buda Amida",
         historia: "Construido por el shōgun Ashikaga Yoshimasa imitando el Kinkaku-ji de su abuelo. La intención original era cubrirlo de láminas de plata, pero debido a la devastadora Guerra Onin nunca se aplicó, conservando su sobrio acabado en madera natural.",
         curiosidad: "Su jardín posee un cono cónico perfecto de arena blanca llamado 'Kōgetsu-dai' (Plataforma para ver la luna), diseñado para reflejar la luz lunar directamente sobre el templo.",
+        horario: "Todos los días de 08:30 a 17:00 (de Diciembre a Febrero abre de 09:00 a 16:30).",
         imagen: "ginkakuji.jpg" 
     },
     { 
@@ -887,6 +976,7 @@ const puntosDeInteres = [
         dedicado: "Residencia defensiva del Shōgun Tokugawa en Kioto",
         historia: "Construido por el legendario Tokugawa Ieyasu para demostrar su supremo poder ante la corte imperial instalada en la misma ciudad. Aquí tuvo lugar en 1867 la renuncia oficial del último shōgun, devolviendo el control político al Emperador.",
         curiosidad: "Sus pasillos cuentan con el famoso 'suelo de ruiseñor' (Uguisubari): las maderas chirrían imitando el canto de las aves al ser pisadas, diseñado como un ingenioso sistema de alarma antirrobos y ninjas.",
+        horario: "08:45 - 17:00 (último acceso a las 16:00). Cierra los martes de Enero, Julio, Agosto y Diciembre.",
         imagen: "castillo_nijo.jpg" 
     },
     { 
@@ -899,6 +989,7 @@ const puntosDeInteres = [
         dedicado: "Fortaleza del unificador Toyotomi Hideyoshi",
         historia: "Fue construido por Toyotomi Hideyoshi como el bastión central de un Japón unificado. El castillo sufrió múltiples destrucciones debido a cercos militares e incendios por rayos, siendo su torre principal reconstruida en hormigón armado en 1931.",
         curiosidad: "Los muros defensivos de piedra contienen rocas gigantescas como la 'Tako-ishi' (Piedra Pulpo), con un peso estimado superior a las 108 toneladas, movida sin maquinaria moderna.",
+        horario: "Torre Principal: 09:00 - 17:00 (última entrada 16:30). El Parque del Castillo está abierto 24 horas.",
         imagen: "castillo_osaka.jpg" 
     },
     { 
@@ -911,6 +1002,7 @@ const puntosDeInteres = [
         dedicado: "Los Cuatro Reyes Celestiales (Shitenno)",
         historia: "Es considerado el templo financiado oficialmente por el Estado más antiguo de Japón. Fue construido por el príncipe Shōtoku para introducir y afianzar el budismo en el país. Aunque sus estructuras han sido reconstruidas fielmente tras guerras e incendios, mantiene el trazado simétrico continental original Asuka.",
         curiosidad: "El estanque interior del templo alberga cientos de tortugas de agua dulce tomando el sol, convirtiéndolo en un símbolo característico de longevidad del templo.",
+        horario: "Terrenos exteriores: 08:30 - 16:30 (de Abril a Septiembre). Edificios y Jardín Gokuraku-jodo: 08:30 - 16:00.",
         imagen: "shintennoji.jpg" 
     },
     { 
@@ -923,30 +1015,113 @@ const puntosDeInteres = [
         dedicado: "Sumiyoshi Sanjin (Dioses del mar y la navegación)",
         historia: "Es el santuario principal de todos los santuarios Sumiyoshi de Japón. Su estilo arquitectónico puro (Sumiyoshi-zukuri) es anterior a la llegada de la influencia arquitectónica budista de China, caracterizándose por techos rectos y fachadas rojas/blancas.",
         curiosidad: "Su famoso puente arqueado rojo Sorihashi (o Puente Taiko) tiene una inclinación de casi 44 grados para imitar un arcoíris que conecta la tierra con los dioses.",
+        horario: "06:00 - 17:00 (de Abril a Septiembre) / 06:30 - 17:00 (de Octubre a Marzo).",
         imagen: "sumiyoshi_taisha.jpg" 
     },
 
     // --- ATRACCIONES ---
-    { titulo: "Tokio - Cruce de Shibuya", tipo: "atraccion", lat: 35.6594943, lng: 139.7005481, descripcion: "El cruce peatonal más transitado del mundo y corazón neurálgico del moderno Tokio.", imagen: "shibuya.jpg" },
-    { titulo: "Tokio - Tokyo Skytree", tipo: "atraccion", lat: 35.7100627, lng: 139.8107004, descripcion: "La torre de radiodifusión más alta del mundo con impresionantes miradores.", imagen: "skytree.jpg" },
-    { titulo: "Tokio - Torre de Tokio", tipo: "atraccion", lat: 35.6585805, lng: 139.7454329, descripcion: "Torre inspirada en la Torre Eiffel y un clásico icono del horizonte tokiota.", imagen: "tokio_tower.jpg" },
-    { titulo: "Tokio - Akihabara", tipo: "atraccion", lat: 35.6997123, lng: 139.7714156, descripcion: "El famoso distrito del anime, el manga, los videojuegos y la electrónica.", imagen: "akihabara.jpg" },
-    { titulo: "Kioto - Arashiyama (Bosque de Bambú)", tipo: "atraccion", lat: 35.0171754, lng: 135.6713182, descripcion: "Paseo entre imponentes cañas de bambú gigantes en la zona oeste de Kioto.", imagen: "bambu_arashiyama.jpg" },
-    { titulo: "Kioto - Barrio de Gion", tipo: "atraccion", lat: 35.0037125, lng: 135.7772183, descripcion: "El histórico barrio de las geishas con casas tradicionales de madera (machiya).", imagen: "gion.jpg" },
-    { titulo: "Osaka - Dotonbori", tipo: "atraccion", lat: 34.6687275, lng: 135.5012975, descripcion: "Emblemática calle junto al canal, famosa por sus deslumbrantes neones y ambiente.", imagen: "dotonbori.jpg" },
-    { titulo: "Osaka - Umeda Sky Building", tipo: "atraccion", lat: 34.7052981, lng: 135.4896434, descripcion: "Rascacielos futurista con un observatorio al aire libre que conecta sus dos torres.", imagen: "umeda_sky.jpg" },
-    { titulo: "Osaka - Shinsekai & Torre Tsutenkaku", tipo: "atraccion", lat: 34.6524992, lng: 135.5063058, descripcion: "Barrio retro nostálgico del siglo XX presidido por la icónica torre Tsutenkaku.", imagen: "shinsekai.jpg" },
-    
-	// --- RESTAURANTES Y CAFETERÍAS (TIKTOK) ---
+    { 
+        titulo: "Tokio - Cruce de Shibuya", 
+        tipo: "atraccion", 
+        lat: 35.6594943, 
+        lng: 139.7005481, 
+        descripcion: "El cruce peatonal más transitado e icónico del mundo, ubicado frente a la estación de Shibuya y la famosa estatua del perro Hachiko. Corazón neurálgico del Tokio moderno, rodeado de pantallas gigantes, neones y rascacielos. Espectacular tanto de día como de noche.", 
+        horario: "Abierto 24 horas (gratuito).", 
+        imagen: "shibuya.jpg" 
+    },
+    { 
+        titulo: "Tokio - Parque Ueno", 
+        tipo: "atraccion", 
+        lat: 35.7197205937487, 
+        lng: 139.77403643687262, 
+        descripcion: "Gran parque público famoso por sus cerezos en flor y el estanque Shinobazu con el templo Benten-do en su centro. Alberga el Santuario Toshogu, la pagoda de cinco pisos, el Templo Kiyomizu Kannon-do, el Gran Buda de Ueno, la estatua de Saigo Takamori y varios de los principales museos nacionales de Tokio.", 
+        horario: "Parque: Abierto 24 horas (entrada libre). Templos y museos: suelen abrir de 09:00 a 17:00.", 
+        imagen: "ueno.jpg" 
+    },
+    { 
+        titulo: "Tokio - Tokyo Skytree", 
+        tipo: "atraccion", 
+        lat: 35.7100627, 
+        lng: 139.8107004, 
+        descripcion: "La torre de radiodifusión más alta del mundo (634 metros) y la estructura más alta de Japón. Cuenta con dos miradores panorámicos (Tembo Deck a 350 m y Tembo Galleria a 450 m) con vistas espectaculares de todo Tokio y el Monte Fuji en días despejados, además del centro comercial Solamachi en su base.", 
+        horario: "Lunes a Viernes: 10:00 - 22:00. Sábados, Domingos y Festivos: 09:00 - 22:00 (último acceso 1 hora antes).", 
+        imagen: "skytree.jpg" 
+    },
+    { 
+        titulo: "Tokio - Torre de Tokio", 
+        tipo: "atraccion", 
+        lat: 35.6585805, 
+        lng: 139.7454329, 
+        descripcion: "Icono clásico del horizonte tokiota construido en 1958 e inspirado en la Torre Eiffel de París. Con sus 332,9 metros pintados en blanco y naranja internacional, ofrece observatorios a 150 m (Main Deck) y 250 m (Top Deck), además del complejo comercial y de ocio FootTown en su base.", 
+        horario: "Todos los días de 09:00 a 23:00 (último acceso al Main Deck a las 22:30).", 
+        imagen: "tokio_tower.jpg" 
+    },
+    { 
+        titulo: "Tokio - Akihabara", 
+        tipo: "atraccion", 
+        lat: 35.6997123, 
+        lng: 139.7714156, 
+        descripcion: "Meca mundial de la cultura otaku, el anime, el manga, los videojuegos retro, las maquetas y la electrónica de consumo. Destaca por sus grandes tiendas de electrónica como Yodobashi Camera, centros de recreativas (arcades), maid cafés y tiendas especializadas de coleccionismo.", 
+        horario: "Barrio accesible 24 horas. Tiendas y galerías: generalmente de 10:00/11:00 a 20:00/21:00.", 
+        imagen: "akihabara.jpg" 
+    },
+    { 
+        titulo: "Kioto - Arashiyama (Bosque de Bambú)", 
+        tipo: "atraccion", 
+        lat: 35.0171754, 
+        lng: 135.6713182, 
+        descripcion: "Mágico e impresionante sendero rodeado de miles de cañas de bambú gigante que se mecen con el viento, considerado uno de los paisajes sonoros protegidos de Japón. Ubicado en la zona oeste de Kioto, conecta con el templo Tenryu-ji y el puente Togetsukyo. Se recomienda visitar muy temprano por la mañana.", 
+        horario: "Abierto 24 horas (gratuito). Acceso libre.", 
+        imagen: "bambu_arashiyama.jpg" 
+    },
+    { 
+        titulo: "Kioto - Barrio de Gion", 
+        tipo: "atraccion", 
+        lat: 35.0037125, 
+        lng: 135.7772183, 
+        descripcion: "El distrito histórico de geishas (geiko y maiko) más famoso de Japón. Conserva sus exclusivas casas de té (ochaya) y viviendas tradicionales de madera (machiya), especialmente a lo largo de la pintoresca calle Hanamikoji y el canal Shirakawa. Un lugar imprescindible para pasear al anochecer.", 
+        horario: "Barrio abierto 24 horas. Negocios y restaurantes: de 11:00 a 22:00 aprox.", 
+        imagen: "gion.jpg" 
+    },
+    { 
+        titulo: "Osaka - Dotonbori", 
+        tipo: "atraccion", 
+        lat: 34.6687275, 
+        lng: 135.5012975, 
+        descripcion: "El corazón gastronómico y de ocio nocturno de Osaka, situado a lo largo del canal Dotonbori. Famoso por sus extravagantes carteles luminosos en 3D (como el cangrejo gigante de Kani Doraku) y el célebre neón del 'Glico Man', además de ser el mejor lugar para probar la comida callejera local (takoyaki y okonomiyaki).", 
+        horario: "Zona accesible 24 horas. Ambiente nocturno hasta altas horas de la madrugada.", 
+        imagen: "dotonbori.jpg" 
+    },
+    { 
+        titulo: "Osaka - Umeda Sky Building", 
+        tipo: "atraccion", 
+        lat: 34.7052981, 
+        lng: 135.4896434, 
+        descripcion: "Impresionante rascacielos de arquitectura futurista formado por dos torres de 173 metros conectadas en la parte superior por el 'Kuchu Teien' (Observatorio del Jardín Flotante). Ofrece una plataforma de observación al aire libre en 360 grados con vistas panorámicas excepcionales de toda la ciudad de Osaka.", 
+        horario: "Todos los días de 09:30 a 22:30 (último acceso a las 22:00).", 
+        imagen: "umeda_sky.jpg" 
+    },
+    { 
+        titulo: "Osaka - Shinsekai & Torre Tsutenkaku", 
+        tipo: "atraccion", 
+        lat: 34.6524992, 
+        lng: 135.5063058, 
+        descripcion: "Barrio nostálgico con estética retro de la Era Showa, presidido por la emblemática Torre Tsutenkaku. Conocido por sus llamativos carteles de neón, su estatua del dios Billiken y sus numerosos locales para degustar 'kushikatsu' (brochetas empanadas fritas).", 
+        horario: "Barrio: Abierto 24 horas. Torre Tsutenkaku: 10:00 a 20:00 (última entrada 19:30).", 
+        imagen: "shinsekai.jpg" 
+    },    
+
+    // --- RESTAURANTES Y CAFETERÍAS (TIKTOK) ---
     { 
         titulo: "Tokio - Benitsuru (Asakusa)", 
         tipo: "restaurante", 
         lat: 35.71220919876276,
         lng: 139.79186014232792, 
-        descripcion: "Famosos pancakes soufflé esponjosos como una nube en Asakusa. Muy populares (favoritos de Justin y Hailey Bieber). Es recomendable ir temprano (aprox. 5:00 AM) para conseguir turno.", 
+        descripcion: "Famosos pancakes soufflé esponjosos como una nube en Asakusa. Muy populares (favoritos de Justin y Hailey Bieber). Es recomendable ir temprano (aprox. 7:00 AM) para la lista de reserva.", 
         platoEstrella: "Pancakes soufflé dulces y salados (pancakes con huevo frito/queso) 🥞🍳",
+        horario: "Todos los días de 10:00 a 16:00 (Last Order 15:30). Reparto de tickets presenciales a partir de las 8:00 - 8:30 AM.",
         imagen: "benitsuru.jpg",
-		videoId: "7664671684913319200"
+        videoId: "7664671684913319200"
     },
     { 
         titulo: "Osaka - Dekasan", 
@@ -955,8 +1130,9 @@ const puntosDeInteres = [
         lng: 135.5118875313639, 
         descripcion: "El sándwich estilo japonés más viral de Osaka. Destacan por su enorme tamaño lleno de ingredientes.", 
         platoEstrella: "Sándwich gigante (recomiendan pedir medio sándwich, 1/2, porque es enorme) 🥪",
+        horario: "Martes a Domingo: 11:00 - 16:00 (o hasta agotar existencias). Cierra los Lunes.",
         imagen: "dekasan.jpg",
-		videoId: "7655420294932303126"
+        videoId: "7655420294932303126"
     },
     { 
         titulo: "Kioto - Shofukutei (笑福亭)", 
@@ -965,6 +1141,7 @@ const puntosDeInteres = [
         lng: 135.7208519828672, 
         descripcion: "Restaurante tradicional con ambiente acogedor y familiar muy cerca del Templo Ryōan-ji en Kioto.", 
         platoEstrella: "Platos tradicionales de fideos Ramen y Udon 🍜",
+        horario: "11:30 - 14:30 / 17:00 - 20:00. Cierra los Miércoles.",
         imagen: "emifukutei.png",
         videoId: "7664671684913319200"
     },
@@ -975,8 +1152,9 @@ const puntosDeInteres = [
         lng: 139.77127303843034, 
         descripcion: "Especialistas en sándwiches fritos (Age-pan) crujientes rellenos de nata, cremas o ingredientes salados.", 
         platoEstrella: "Sándwich de pan frito relleno 🥪🔥",
+        horario: "Todos los días de 11:00 a 19:00.",
         imagen: "age3.jpg",
-		videoId: "7667309078074445078"
+        videoId: "7667309078074445078"
     },
     { 
         titulo: "Osaka - Kitan Hibiki（㐂舌響）", 
@@ -985,8 +1163,9 @@ const puntosDeInteres = [
         lng: 135.50258435187905, 
         descripcion: "Restaurante de carnes y hamburguesas gourmet elaboradas con auténtico filete de ternera Wagyu envejecido.", 
         platoEstrella: "Hamburguesa de Wagyu envejecido (2.000 ¥ - 3.000 ¥) 🍔🥩",
+        horario: "Almuerzo: 11:00 - 15:00 (L.O. 14:30) / Cena: 17:00 - 23:00 (L.O. 22:00).",
         imagen: "wagyu_burger.png",
-		videoId: "7668707887606189333"
+        videoId: "7668707887606189333"
     },
     { 
         titulo: "Tokio - Asakusa Gyukatsu", 
@@ -995,8 +1174,9 @@ const puntosDeInteres = [
         lng: 139.79605342652903, 
         descripcion: "El local más icónico para probar el Gyukatsu (filete de ternera empanado al estilo tonkatsu) justo frente a la puerta Kaminarimon.", 
         platoEstrella: "Menú Gyukatsu con piedra caliente para terminar la carne a tu gusto 🥩🔥 (~7.000 ¥ para 2 personas)",
+        horario: "Todos los días de 11:00 a 22:00 (Last Order 21:30).",
         imagen: "asakusa_gyukatsu.png",
-		videoId: "7662830227340430614"
+        videoId: "7662830227340430614"
     },
     { 
         titulo: "Kioto - amam dacotan kyoto", 
@@ -1005,8 +1185,9 @@ const puntosDeInteres = [
         lng: 135.75852908443395, 
         descripcion: "Panadería artesanal de diseño espectacular en Nakagyo Ward. Famosa por sus deliciosos bocadillos salados y repostería recién horneada.", 
         platoEstrella: "Bocadillos artesanales y repostería creativa 🥐🥪",
+        horario: "Todos los días de 08:00 a 19:00 (Reparto de tickets numéricos WEB y presenciales desde las 07:10 AM).",
         imagen: "amam_dacotan.jpg",
-		videoId: "7671333041825975570"
+        videoId: "7671333041825975570"
     },
     { 
         titulo: "Osaka - Toichi Pancake Kitahorie", 
@@ -1015,8 +1196,9 @@ const puntosDeInteres = [
         lng: 135.49541974579614, 
         descripcion: "Cafetería famosa por servir uno de los pancakes soufflé más esponjosos y suaves de Osaka. Aceptan reservas.", 
         platoEstrella: "Brûlée Pancake con capa caramelizada crujiente (¥1,300) 🥞🔥",
+        horario: "Todos los días de 11:00 a 19:00 (Last Order a las 18:00).",
         imagen: "toichi_pancake.jpg",
-		videoId: "7663084338690510087"
+        videoId: "7663084338690510087"
     },
     { 
         titulo: "Osaka - Crepe & Espresso & 9-chome", 
@@ -1025,8 +1207,9 @@ const puntosDeInteres = [
         lng: 135.51581195581983, 
         descripcion: "Crepería famosa por sus crepas crujientes rellenas de fresas y chocolate. No aceptan reservas y algunos productos son de cantidad limitada.", 
         platoEstrella: "Bonchi Strawberry Crepe (¥1,600) 🍓🍫",
+        horario: "Todos los días de 11:00 a 19:00.",
         imagen: "crepe_espresso.jpg",
-		videoId: "7671987626957671687"
+        videoId: "7671987626957671687"
     }
 ];
 
@@ -1060,12 +1243,16 @@ function initMap() {
         
         if (punto.tipo === 'hotel') {
             el.className = 'pin-hotel';
-            // IMPORTANTE: Capa interna (círculo) y el span (centrado) insertados vía JS
             el.innerHTML = '<div class="pin-hotel-inner"><span>🏨</span></div>';
         } else if (punto.tipo === 'restaurante') {
             el.className = 'pin-restaurante';
             if (punto.imagen) {
                 el.style.backgroundImage = `url('./mapa/${punto.imagen}')`;
+            }
+        } else if (punto.tipo === 'pokelid') {
+            el.className = 'pin-thumb pin-pokelid';
+            if (punto.imagen) {
+                el.style.backgroundImage = `url('./${punto.imagen}')`;
             }
         } else {
             var claseTipo = 'pin-' + (punto.tipo || 'atraccion');
@@ -1108,6 +1295,7 @@ function filtrarMarcadores() {
     var mostrarAtracciones = document.getElementById('filtro-atraccion').checked;
     var mostrarHoteles = document.getElementById('filtro-hotel').checked;
     var mostrarRestaurantes = document.getElementById('filtro-restaurante').checked;
+    var mostrarPokelids = document.getElementById('filtro-pokelid').checked;
 
     marcadoresMaplibre.forEach(function(item) {
         if (item.tipo === 'templo') {
@@ -1118,6 +1306,8 @@ function filtrarMarcadores() {
             item.instancia.getElement().style.display = mostrarHoteles ? 'block' : 'none';
         } else if (item.tipo === 'restaurante') {
             item.instancia.getElement().style.display = mostrarRestaurantes ? 'block' : 'none';
+        } else if (item.tipo === 'pokelid') {
+            item.instancia.getElement().style.display = mostrarPokelids ? 'block' : 'none';
         }
     });
 }
@@ -1188,6 +1378,32 @@ function openDay(id) {
 
 function openPoiModal(punto) {
     document.getElementById('modalDaySections').style.display = 'none';
+    
+    // CASO ESPECIAL: POKELID (Sólo imagen y coordenadas)
+    // CASO ESPECIAL: POKELID (Sólo botón 'Cómo llegar' e imagen completa)
+if (punto.tipo === 'pokelid') {
+    document.getElementById('modalTitle').innerText = ''; // Sin título
+    document.getElementById('modalPoiDesc').style.display = 'none'; // Oculta bloque de texto
+
+    // Mostrar botón "Cómo llegar" configurado con las coordenadas
+    var btnLlegar = document.getElementById('modalBtnLlegar');
+    btnLlegar.href = `https://www.google.com/maps/dir/?api=1&destination=${punto.lat},${punto.lng}`;
+    btnLlegar.style.display = 'inline-flex';
+
+    // Cargar imagen
+    var imgContainer = document.getElementById('modalPoiImgContainer');
+    if (punto.imagen) {
+        imgContainer.innerHTML = `<img src="./${punto.imagen}" alt="Pokelid">`;
+        imgContainer.style.display = 'block';
+    } else {
+        imgContainer.innerHTML = '';
+        imgContainer.style.display = 'none';
+    }
+
+    document.getElementById('dayModal').style.display = "block";
+    return;
+}
+
     document.getElementById('modalTitle').innerText = punto.titulo;
     
     // Configurar enlace del botón "Cómo llegar"
@@ -1197,9 +1413,8 @@ function openPoiModal(punto) {
     var descElem = document.getElementById('modalPoiDesc');
     let htmlContent = `<p style="font-size: 1.05rem;">${punto.descripcion}</p>`;
     
-    // CASO 1: Si es Restaurante (Inyectamos el botón AQUÍ para que quede arriba del plato estrella)
+    // CASO 1: Si es Restaurante
     if (punto.tipo === 'restaurante') {
-        // Ocultamos el botón exterior por defecto y lo metemos en el flujo del HTML
         btnLlegar.style.display = 'none';
 
         htmlContent += `
@@ -1211,6 +1426,7 @@ function openPoiModal(punto) {
             </div>`;
 
         htmlContent += `<div class="poi-info-block">`;
+        if (punto.horario) htmlContent += `<p><strong>Horario:</strong> ${punto.horario}</p>`;
         if (punto.platoEstrella) htmlContent += `<p><strong>Plato estrella:</strong> ${punto.platoEstrella}</p>`;
         
         // REPRODUCTOR DIRECTO DE TIKTOK
@@ -1226,17 +1442,18 @@ function openPoiModal(punto) {
         htmlContent += `</div>`;
 
     } else {
-        // CASO 2: Para el resto de marcadores (Templos, Atracciones, etc.) se muestra abajo como siempre
+        // CASO 2: Templos, Atracciones y Hoteles
         btnLlegar.style.display = 'inline-flex';
 
+        htmlContent += `<div class="poi-info-block">`;
+        if (punto.horario) htmlContent += `<p><strong>Horario:</strong> ${punto.horario}</p>`;
         if (punto.tipo === 'templo') {
-            htmlContent += `<div class="poi-info-block">`;
             if (punto.anio) htmlContent += `<p><strong>Año de construcción:</strong> ${punto.anio}</p>`;
             if (punto.dedicado) htmlContent += `<p><strong>Dedicado a / Uso:</strong> ${punto.dedicado}</p>`;
             if (punto.historia) htmlContent += `<p><strong>Historia:</strong> ${punto.historia}</p>`;
             if (punto.curiosidad) htmlContent += `<p><strong>Curiosidad:</strong> ${punto.curiosidad}</p>`;
-            htmlContent += `</div>`;
         }
+        htmlContent += `</div>`;
     }
 
     descElem.innerHTML = htmlContent;
@@ -1255,11 +1472,8 @@ function openPoiModal(punto) {
 }
 
 function closeModal() { 
-    // Limpiamos el contenido del modal (destruye el iframe de TikTok si existe)
     document.getElementById('modalPoiDesc').innerHTML = '';
     document.getElementById('modalPoiDesc').style.display = "none";
-    
-    // Ocultamos la ventana modal
     document.getElementById('dayModal').style.display = "none"; 
 }
 
