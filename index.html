@@ -488,7 +488,7 @@
         </label>
         <label class="leyenda-item">
             <input type="checkbox" id="filtro-pokelid" checked onchange="filtrarMarcadores()">
-            <span class="leyenda-color color-pokelid"></span> Pokelids
+            <span class="leyenda-color color-pokelid"></span> Pokémon
         </label>
     </div>
     
@@ -827,6 +827,69 @@ const puntosDeInteres = [
         lng: 127.826113,
         imagen: "pokelids/Okinawa_Tauros.png"
     },
+	{
+        titulo: "Tokyo Station",
+        tipo: "pokelid",
+        lat: 35.68296804317893, 
+        lng: 139.76847214502774,
+        imagen: "pokelids/tokyo_station.jpg"
+    },
+	{
+        titulo: "Tokyo DX",
+        tipo: "pokelid",
+        lat: 35.68088772238742,
+        lng: 139.77437730911583,
+        imagen: "pokelids/tokyo_dx.jpg"
+    },
+	{
+        titulo: "Tokyo Shibuya",
+        tipo: "pokelid",
+        lat: 35.66688805556099, 
+        lng: 139.69954797298348,
+        imagen: "pokelids/tokyo_shibuya.jpg"
+    },
+	{
+        titulo: "Tokyo Mega Tokyo",
+        tipo: "pokelid",
+        lat: 35.734358749800926, 
+        lng: 139.71671410945586,
+        imagen: "pokelids/tokyo_megatokyo.jpg"
+    },
+	{
+        titulo: "Tokyo Skytree",
+        tipo: "pokelid",
+        lat: 35.71010933024571,
+        lng: 139.82795067447938,
+        imagen: "pokelids/tokyo_skytree.jpg"
+    },
+	{
+        titulo: "Kyoto",
+        tipo: "pokelid",
+        lat: 35.014683240374644,
+        lng: 135.75204189216706,
+        imagen: "pokelids/kyoto.jpg"
+    },
+	{
+        titulo: "Osaka",
+        tipo: "pokelid",
+        lat: 34.70268576610274, 
+        lng: 135.49776569400223,
+        imagen: "pokelids/osaka.jpg"
+    },
+	{
+        titulo: "Osaka DX",
+        tipo: "pokelid",
+        lat: 34.684323366765106,
+        lng: 135.50148669242532,
+        imagen: "pokelids/osaka_dx.jpg"
+    },
+	{
+        titulo: "Okinawa",
+        tipo: "pokelid",
+        lat: 26.313381702921493,
+        lng: 127.79613753807594,
+        imagen: "pokelids/okinawa.jpg"
+    },
     // --- HOTELES ---
     { 
         titulo: "Tokio - Hotel Gracery Shinjuku", 
@@ -887,6 +950,19 @@ const puntosDeInteres = [
         curiosidad: "A la entrada verás enormes barriles de sake (kazari-daru) y también barriles de vino francés de Borgoña, donados debido al gran amor que el Emperador Meiji tenía por la cultura occidental.",
         horario: "Abre con el amanecer y cierra con la puesta del sol (en Septiembre aprox. 05:20 - 17:50).",
         imagen: "meiji_jingu.jpg" 
+    },
+    { 
+        titulo: "Tokio - Gotokoji", 
+        tipo: "templo", 
+        lat: 35.64898673842702,  
+        lng: 139.64749172493737,
+		descripcion: "Templo budista zen famoso por ser el legendario lugar de origen del gato de la fortuna (maneki-neko).", 
+		anio: "1480",
+		dedicado: "Kannon (Diosa de la Misericordia) y el clan Ii",
+		historia: "Fundado en 1480 por Kira Masatada como un templo modesto. En el siglo XVII, el señor feudal Ii Naotaka se salvó de una tormenta gracias a un gato que le hizo señas para que entrara al templo; agradecido, Naotaka lo convirtió en el templo familiar del clan Ii.",
+		curiosidad: "Alberga un área específica con miles de figuras de gatos blancos de la suerte de todos los tamaños, que los visitantes compran, piden un deseo y dejan allí cuando se cumple.",
+		horario: "Todos los días de 06:00 a 17:00.",
+		imagen: "gotokuji.jpg"
     },
     { 
         titulo: "Tokio - Palacio Imperial", 
@@ -1056,6 +1132,60 @@ const puntosDeInteres = [
         horario: "Todos los días de 09:00 a 23:00 (último acceso al Main Deck a las 22:30).", 
         imagen: "tokio_tower.jpg" 
     },
+	{
+		titulo: "Tokio - Centro de Información Turística de Asakusa (Mirador)",
+		tipo: "atraccion",
+		lat: 35.71093304553828,
+		lng: 139.79778588085415,
+		descripcion: "Edificio de diseño vanguardista diseñado por Kengo Kuma, famoso por su estructura de madera en capas horizontales. Su mirador gratuito en la octava planta ofrece espectaculares vistas panorámicas de la puerta Kaminarimon, el templo Senso-ji, la avenida Nakamise y el horizonte de la torre Tokyo Skytree.",
+		horario: "Mirador abierto todos los días de 09:00 a 22:00 (el centro de información opera de 09:00 a 20:00).",
+		imagen: "asakusa_culture_tourist_information_center.jpg"
+	},
+	{ 
+		titulo: "Tokio - Ameyoko Shotengai", 
+		tipo: "atraccion", 
+		lat: 35.7090492549729, 
+		lng: 139.774808242727, 
+		descripcion: "Animada y vibrante calle comercial al aire libre situada a lo largo de las vías del tren entre las estaciones de Ueno y Okachimachi. Surgida como mercado negro tras la Segunda Guerra Mundial, hoy en día es famosa por sus puestos de comida callejera, marisco fresco, cosméticos, ropa, souvenirs y aperitivos a precios muy competitivos.", 
+		horario: "Todos los días de 10:00 a 20:00 (el horario de los puestos y tiendas individuales puede variar).", 
+		imagen: "ameyoko_shotengai.jpg" 
+	},
+	{
+		titulo: "Tokio - Jardín Nacional Shinjuku Gyoen",
+		tipo: "atraccion",
+		lat: 35.685836977430604,
+		lng: 139.7099115429009,
+		descripcion: "Uno de los parques más grandes e importantes de Tokio, con 58 hectáreas de extensión. Antiguo terreno señorial del periodo Edo e imperio botánico, combina tres estilos bien diferenciados: un jardín tradicional japonés, un jardín paisajístico inglés y un jardín formal francés, además de un gran invernadero tropical. Es uno de los destinos principales de la ciudad para contemplar el cerezo en flor (sakura) en primavera.",
+		horario: "Martes a domingo de 09:00 a 16:30 / 18:00 (según la época del año; cerrado los lunes excepto en temporada de cerezos).",
+		imagen: "shinjuku_gyoen.jpg"
+	},
+	{
+		titulo: "Tokio - Takeshita Street",
+		tipo: "atraccion",
+		lat: 35.67158570017334, 
+		lng: 139.70313108375558,
+		descripcion: "Famosa y peatonal calle comercial de unos 350 metros ubicada en Harajuku, considerada el epicentro de la cultura juvenil, la moda estrafalaria y la estética kawaii en Tokio. Llena de tiendas de ropa extravagante, boutiques de accesorios, cafeterías temáticas y sus icónicos puestos de crepes.",
+		horario: "Todos los días de 10:00 a 20:00 (el horario de las tiendas individuales puede variar).",
+		imagen: "takeshita_street.jpg"
+	},
+	{
+		titulo: "Tokio - Calle Kabukicho Ichiban-gai",
+		tipo: "atraccion",
+		lat: 35.693840393629095,
+		lng: 139.70101594812164,
+		descripcion: "La arteria comercial y de ocio nocturno más emblemática de Shinjuku, fácilmente reconocible por su famoso cartel de neón rojo a la entrada. Ubicada en pleno corazón del distrito del entretenimiento, esta concurrida avenida está repleta de restaurantes, izakayas, salas de juegos, locales nocturnos y luminosos deslumbrantes que representan la esencia vibrante de la noche tokiota.",
+		horario: "Abierta las 24 horas (la mayoría de negocios y vida nocturna se concentran de 18:00 a 05:00).",
+		imagen: "shinjuku.jpg"
+	},
+	{
+		titulo: "Tokio - Tanuki Dori",
+		tipo: "atraccion",
+		lat: 35.71209391978422, 
+		lng: 139.79407300461241,
+		descripcion: "Pintoresca callejuela comercial ubicada en el histórico barrio de Asakusa, famosa por sus 12 estatuas de bronce de Tanuki (mapaches japoneses místico-folclóricos), cada una representando un tipo de buena suerte. Es una travesía llena de encanto tradicional con tiendas de dulces, artesanías, ropa de kimono y restaurantes locales.",
+		horario: "Abierta las 24 horas (el horario de las tiendas y restaurantes individuales suele ser de 10:00 a 19:00).",
+		imagen: "tanuki_dori.jpg"
+	},
     { 
         titulo: "Tokio - Akihabara", 
         tipo: "atraccion", 
