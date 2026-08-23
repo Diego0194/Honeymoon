@@ -111,12 +111,48 @@
             font-size: 14px;
             border: 1px solid #333;
             color: #eee;
+            transition: all 0.3s ease;
         }
 
-        .leyenda-panel h4 {
-            margin: 0 0 10px 0;
+        .leyenda-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .leyenda-header h4 {
+            margin: 0;
             font-size: 15px;
             color: var(--jp-red);
+        }
+
+        .toggle-icon {
+            font-size: 12px;
+            color: #aaa;
+            transition: transform 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .leyenda-body {
+            margin-top: 10px;
+            max-height: 500px;
+            opacity: 1;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+        }
+
+        /* Estado contraído */
+        .leyenda-panel.collapsed .leyenda-body {
+            max-height: 0;
+            opacity: 0;
+            margin-top: 0;
+            pointer-events: none;
+        }
+
+        .leyenda-panel.collapsed .toggle-icon {
+            transform: rotate(-180deg);
         }
 
         .leyenda-item {
@@ -145,6 +181,28 @@
         .color-hotel { background-color: #007bff; }
         .color-restaurante { background-color: #e67e22; }
         .color-pokelid { background-color: #ff007f; }
+
+        .btn-ubi-panel {
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: var(--jp-red);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-ubi-panel:hover {
+            background: #e03e5c;
+        }
 
         .pin-thumb {
             width: 60px;
@@ -264,14 +322,14 @@
 			margin-top: 15px;
 			border-radius: 8px;
 			overflow: hidden;
-			max-height: none; /* Se elimina el límite rígido para evitar el recorte */
+			max-height: none;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 		}
 
 		.imagen-container img {
 			width: 100%;
 			height: auto;
-			max-height: 65vh; /* Se limita según el alto de la pantalla */
+			max-height: 65vh;
 			object-fit: contain;
 			display: block;
 		}
@@ -468,28 +526,40 @@
 </div>
 
 <div id="mapa-tab" class="tab-content">
-    <div class="leyenda-panel">
-        <h4>Leyenda / Filtros</h4>
-        <label class="leyenda-item">
-            <input type="checkbox" id="filtro-templo" checked onchange="filtrarMarcadores()">
-            <span class="leyenda-color color-templo"></span> Monumentos / Templos
-        </label>
-        <label class="leyenda-item">
-            <input type="checkbox" id="filtro-atraccion" checked onchange="filtrarMarcadores()">
-            <span class="leyenda-color color-atraccion"></span> Atracciones
-        </label>
-        <label class="leyenda-item">
-            <input type="checkbox" id="filtro-hotel" checked onchange="filtrarMarcadores()">
-            <span class="leyenda-color color-hotel"></span> Hoteles
-        </label>
-        <label class="leyenda-item">
-            <input type="checkbox" id="filtro-restaurante" checked onchange="filtrarMarcadores()">
-            <span class="leyenda-color color-restaurante"></span> Restaurantes
-        </label>
-        <label class="leyenda-item">
-            <input type="checkbox" id="filtro-pokelid" checked onchange="filtrarMarcadores()">
-            <span class="leyenda-color color-pokelid"></span> Pokémon
-        </label>
+    <div id="leyendaPanel" class="leyenda-panel">
+        <div class="leyenda-header" onclick="toggleLeyenda()">
+            <h4>Leyenda / Filtros</h4>
+            <span class="toggle-icon">▼</span>
+        </div>
+        
+        <div class="leyenda-body">
+            <label class="leyenda-item">
+                <input type="checkbox" id="filtro-templo" checked onchange="filtrarMarcadores()">
+                <span class="leyenda-color color-templo"></span> Monumentos / Templos
+            </label>
+            <label class="leyenda-item">
+                <input type="checkbox" id="filtro-atraccion" checked onchange="filtrarMarcadores()">
+                <span class="leyenda-color color-atraccion"></span> Atracciones
+            </label>
+            <label class="leyenda-item">
+                <input type="checkbox" id="filtro-hotel" checked onchange="filtrarMarcadores()">
+                <span class="leyenda-color color-hotel"></span> Hoteles
+            </label>
+            <label class="leyenda-item">
+                <input type="checkbox" id="filtro-restaurante" checked onchange="filtrarMarcadores()">
+                <span class="leyenda-color color-restaurante"></span> Restaurantes
+            </label>
+            <label class="leyenda-item">
+                <input type="checkbox" id="filtro-pokelid" checked onchange="filtrarMarcadores()">
+                <span class="leyenda-color color-pokelid"></span> Pokémon
+            </label>
+            
+            <hr style="border: 0; border-top: 1px solid #444; margin: 10px 0;">
+            
+            <button class="btn-ubi-panel" onclick="obtenerUbicacionUsuario()">
+                📍 Mi ubicación
+            </button>
+        </div>
     </div>
     
     <div id="mapa"></div>
@@ -547,6 +617,7 @@
 <script> 
 var map = null;
 var marcadoresMaplibre = [];
+var miUbicacionMarker = null;
 
 function showTab(event, tabId) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -561,6 +632,11 @@ function showTab(event, tabId) {
             setTimeout(() => { map.resize(); }, 100);
         }
     }
+}
+
+function toggleLeyenda() {
+    var panel = document.getElementById('leyendaPanel');
+    panel.classList.toggle('collapsed');
 }
 
 const dayDetails = { 
@@ -1402,22 +1478,52 @@ function initMap() {
 
         marcadoresMaplibre.push({ instancia: marker, tipo: punto.tipo });
     });
+}
 
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
+function obtenerUbicacionUsuario() {
+    if (!("geolocation" in navigator)) {
+        alert("Tu navegador no soporta geolocalización.");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+
+            if (miUbicacionMarker) {
+                miUbicacionMarker.setLngLat([lng, lat]);
+            } else {
                 var elUbi = document.createElement('div');
                 elUbi.className = 'mi-ubicacion-icon';
                 var popup = new maplibregl.Popup({ offset: 25 }).setHTML("<b>Estás aquí</b>");
-                new maplibregl.Marker({ element: elUbi, anchor: 'center' })
-                    .setLngLat([position.coords.longitude, position.coords.latitude])
+                
+                miUbicacionMarker = new maplibregl.Marker({ element: elUbi, anchor: 'center' })
+                    .setLngLat([lng, lat])
                     .setPopup(popup)
                     .addTo(map);
-            },
-            function(error) { console.warn("No se pudo obtener la ubicación."); },
-            { enableHighAccuracy: true }
-        );
-    }
+            }
+
+            map.flyTo({ center: [lng, lat], zoom: 14 });
+        },
+        function(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("Para ver tu ubicación, asegúrate de permitir el acceso a la localización cuando Chrome/iOS lo solicite o revisa la configuración de Privacidad.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("La información de ubicación no está disponible.");
+                    break;
+                case error.TIMEOUT:
+                    alert("Se agotó el tiempo de espera para obtener la ubicación.");
+                    break;
+                default:
+                    alert("Error desconocido al obtener la ubicación.");
+                    break;
+            }
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
 }
 
 function filtrarMarcadores() {
@@ -1509,41 +1615,35 @@ function openDay(id) {
 function openPoiModal(punto) {
     document.getElementById('modalDaySections').style.display = 'none';
     
-    // CASO ESPECIAL: POKELID (Sólo imagen y coordenadas)
-    // CASO ESPECIAL: POKELID (Sólo botón 'Cómo llegar' e imagen completa)
-if (punto.tipo === 'pokelid') {
-    document.getElementById('modalTitle').innerText = ''; // Sin título
-    document.getElementById('modalPoiDesc').style.display = 'none'; // Oculta bloque de texto
+    if (punto.tipo === 'pokelid') {
+        document.getElementById('modalTitle').innerText = '';
+        document.getElementById('modalPoiDesc').style.display = 'none';
 
-    // Mostrar botón "Cómo llegar" configurado con las coordenadas
-    var btnLlegar = document.getElementById('modalBtnLlegar');
-    btnLlegar.href = `https://www.google.com/maps/dir/?api=1&destination=${punto.lat},${punto.lng}`;
-    btnLlegar.style.display = 'inline-flex';
+        var btnLlegar = document.getElementById('modalBtnLlegar');
+        btnLlegar.href = `https://www.google.com/maps/dir/?api=1&destination=${punto.lat},${punto.lng}`;
+        btnLlegar.style.display = 'inline-flex';
 
-    // Cargar imagen
-    var imgContainer = document.getElementById('modalPoiImgContainer');
-    if (punto.imagen) {
-        imgContainer.innerHTML = `<img src="./${punto.imagen}" alt="Pokelid">`;
-        imgContainer.style.display = 'block';
-    } else {
-        imgContainer.innerHTML = '';
-        imgContainer.style.display = 'none';
+        var imgContainer = document.getElementById('modalPoiImgContainer');
+        if (punto.imagen) {
+            imgContainer.innerHTML = `<img src="./${punto.imagen}" alt="Pokelid">`;
+            imgContainer.style.display = 'block';
+        } else {
+            imgContainer.innerHTML = '';
+            imgContainer.style.display = 'none';
+        }
+
+        document.getElementById('dayModal').style.display = "block";
+        return;
     }
-
-    document.getElementById('dayModal').style.display = "block";
-    return;
-}
 
     document.getElementById('modalTitle').innerText = punto.titulo;
     
-    // Configurar enlace del botón "Cómo llegar"
     var btnLlegar = document.getElementById('modalBtnLlegar');
     btnLlegar.href = `https://www.google.com/maps/dir/?api=1&destination=${punto.lat},${punto.lng}`;
 
     var descElem = document.getElementById('modalPoiDesc');
     let htmlContent = `<p style="font-size: 1.05rem;">${punto.descripcion}</p>`;
     
-    // CASO 1: Si es Restaurante
     if (punto.tipo === 'restaurante') {
         btnLlegar.style.display = 'none';
 
@@ -1559,7 +1659,6 @@ if (punto.tipo === 'pokelid') {
         if (punto.horario) htmlContent += `<p><strong>Horario:</strong> ${punto.horario}</p>`;
         if (punto.platoEstrella) htmlContent += `<p><strong>Plato estrella:</strong> ${punto.platoEstrella}</p>`;
         
-        // REPRODUCTOR DIRECTO DE TIKTOK
         if (punto.videoId) {
             htmlContent += `
             <div class="tiktok-embed-container" style="margin-top:15px; display:flex; justify-content:center;">
@@ -1572,7 +1671,6 @@ if (punto.tipo === 'pokelid') {
         htmlContent += `</div>`;
 
     } else {
-        // CASO 2: Templos, Atracciones y Hoteles
         btnLlegar.style.display = 'inline-flex';
 
         htmlContent += `<div class="poi-info-block">`;
